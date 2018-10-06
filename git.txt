@@ -11,3 +11,4 @@ git push		NA commit, stuurt naar github
 
 
 git clone <url> 	repo downloaden (ssh)
+git pull		ophalen nieuwste versie van git
