@@ -1,0 +1,13 @@
+git reset --hard	reset alles wat locaal staat
+git status		status van je bestanden
+   - rood = nieuw of aangepast
+   - groen = staging
+
+ 
+git add <file>		welk bestand je wilt stagen
+git commit -m "text"
+git push		NA commit, stuurt naar github
+
+
+
+git clone <url> 	repo downloaden (ssh)
