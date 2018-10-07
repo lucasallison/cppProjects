@@ -9,10 +9,18 @@ ofstream uitvoer;
 char kar;
 int getalFile = 0;
  
-invoer.open("..\\invoer.txt");
+invoer.open("/home/pi/cppProjects/invoer.txt");
+uitvoer.open("/home/pi/cppProjects/uitvoer.txt");
 kar = invoer.get();
 
+if (invoer.fail()) {
+cout  << "De file kan niet geopend worden." << endl;
+return 1 ;
+}//if
+
 while (! invoer.eof()) {
+uitvoer.put(kar);
+
 	if (isdigit(kar)) {
         int getal = (int)kar - 48;
         getalFile = getalFile * 10 + getal;
@@ -29,6 +37,7 @@ while (! invoer.eof()) {
 }//while
 
 invoer.close();
+uitvoer.close();
 
 	return 0;
 }
