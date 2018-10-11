@@ -8,7 +8,7 @@ ifstream invoer;
 ofstream uitvoer;
 char kar;
 int getalFile = 0;
-int pincode = 3285;
+int pincode;
 int digit1;
 int digit2;
 int digit3;
@@ -32,16 +32,6 @@ return 1 ;
 
 
 while (! invoer.eof()) {
-
-    if (isdigit(kar)) {
-        int getal = (int)kar - 48;
-        getalFile = getalFile * 10 + getal;
-    } else  {
-        if ( ! getalFile == 0) {
-            cout << "Dit is het kwadraad van uw getal (" << getalFile << "): " << getalFile * getalFile << endl;
-            getalFile = 0;
-        }
-    }
 
     if (kar != '\n') {
         if (codePlek == 0) {
