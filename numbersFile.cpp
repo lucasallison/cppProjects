@@ -83,6 +83,7 @@ while (! invoer.eof()) {
             digit3 = (pincode / 10) % 10;
             digit4 = pincode % 10;
 
+            codePlek = 0;
         }
         else {
             pincodeFile = 0;
