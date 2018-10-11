@@ -7,31 +7,67 @@ int main () {
 ifstream invoer;
 ofstream uitvoer;
 char kar;
-int getalFile = 0;
+int karInt;
+char prevKar;
 int pincode;
+int pincodeFile = 0;
 int digit1;
 int digit2;
 int digit3;
 int digit4;
 int codePlek = 0;
- 
+
+//openen in- en uitvoerfile
 invoer.open("..\\invoer.txt");
 uitvoer.open("..\\uitvoer.txt");
 kar = invoer.get();
+prevKar = kar;
 
+//kijken of de file geopend kan worden
 if (invoer.fail()) {
 cout  << "De file kan niet geopend worden." << endl;
 return 1 ;
 }
 
+//opvragen en checken van pincode
+cout << "Voer een pincode in: ";
+cin >> pincode;
+if (pincode < 0 || pincode > 9999) {
+    cout << "Dit is een ongeldige pincode";
+    return 1;
+}
 
-    digit1 = pincode / 1000;
-    digit2 = (pincode / 100) % 10;
-    digit3 = (pincode / 10) % 10;
-    digit4 = pincode % 10;
+//omzetten van pincode in aparte intergers
+digit1 = pincode / 1000;
+digit2 = (pincode / 100) % 10;
+digit3 = (pincode / 10) % 10;
+digit4 = pincode % 10;
 
-
+//coderen van een invoerfile
 while (! invoer.eof()) {
+
+    //aanpassen pincode
+    if (isdigit(kar)) {
+        karInt = kar - 48;
+        pincodeFile = pincodeFile * 10 + karInt;
+    }
+
+    if (isdigit(prevKar) && ! isdigit(kar)) {
+        if (pincodeFile < 0 || pincodeFile > 0) {
+
+            pincode = pincodeFile;
+            digit1 = pincode / 1000;
+            digit2 = (pincode / 100) % 10;
+            digit3 = (pincode / 10) % 10;
+            digit4 = pincode % 10;
+
+        }
+        else {
+            pincodeFile = 0;
+        }
+    }
+
+    prevKar = kar;
 
     if (kar != '\n') {
         if (codePlek == 0) {
@@ -50,9 +86,10 @@ while (! invoer.eof()) {
 
     codePlek++;
     codePlek = codePlek % 4;
-
 	uitvoer.put(kar);
 	kar = invoer.get();
+
+
 }
 
 invoer.close();
