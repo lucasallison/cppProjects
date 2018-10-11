@@ -52,22 +52,6 @@ while (! invoer.eof()) {
         pincodeFile = pincodeFile * 10 + karInt;
     }
 
-    if (isdigit(prevKar) && ! isdigit(kar)) {
-        if (pincodeFile < 0 || pincodeFile > 0) {
-
-            pincode = pincodeFile;
-            digit1 = pincode / 1000;
-            digit2 = (pincode / 100) % 10;
-            digit3 = (pincode / 10) % 10;
-            digit4 = pincode % 10;
-
-        }
-        else {
-            pincodeFile = 0;
-        }
-    }
-
-    prevKar = kar;
 
     if (kar != '\n') {
         if (codePlek == 0) {
@@ -82,10 +66,30 @@ while (! invoer.eof()) {
         if (codePlek == 3) {
             kar = (kar + digit4) % 128;
         }
+
+        codePlek++;
+        codePlek = codePlek % 4;
+    }
+    else {
+        codePlek = 0;
     }
 
-    codePlek++;
-    codePlek = codePlek % 4;
+    if (isdigit(prevKar) && ! isdigit(kar)) {
+        if (pincode >= 0 && pincode <= 9999) {
+
+            pincode = pincodeFile;
+            digit1 = pincode / 1000;
+            digit2 = (pincode / 100) % 10;
+            digit3 = (pincode / 10) % 10;
+            digit4 = pincode % 10;
+
+        }
+        else {
+            pincodeFile = 0;
+        }
+    }
+
+    prevKar = kar;
 	uitvoer.put(kar);
 	kar = invoer.get();
 
