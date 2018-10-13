@@ -7,12 +7,10 @@ void coderenFile (int pin, ifstream &invoer, ofstream &uitvoer) {
 
 int pincodeFile = 0;
 int codePlek = 0;
-int karInt;
+int karInt; //omzetten char getal naar int getal
 char kar;
 char prevKar;
-
-kar = invoer.get();
-prevKar = kar;
+char karEncoded;
 
 int digit1 = pin / 1000;
 int digit2 = (pin / 100) % 10;
@@ -21,7 +19,9 @@ int digit4 = pin % 10;
 
 while (! invoer.eof()) {
 
-    
+    prevKar = kar;
+    kar = invoer.get();
+
     if (isdigit(kar)) {
         karInt = kar - 48;
         pincodeFile = pincodeFile * 10 + karInt;
@@ -30,16 +30,20 @@ while (! invoer.eof()) {
 
     if (kar != '\n') {
         if (codePlek == 0) {
-            kar = (kar + digit1 + 128) % 128;
+            karEncoded = (kar + digit1 + 128) % 128;
+            uitvoer.put(karEncoded);
         }
         if (codePlek == 1) {
-            kar = (kar + digit2 + 128) % 128;
+            karEncoded = (kar + digit2 + 128) % 128;
+            uitvoer.put(karEncoded);
         }
         if (codePlek == 2) {
-            kar = (kar + digit3 + 128) % 128;
+            karEncoded = (kar + digit3 + 128) % 128;
+            uitvoer.put(karEncoded);
         }
         if (codePlek == 3) {
-            kar = (kar + digit4 + 128) % 128;
+            karEncoded = (kar + digit4 + 128) % 128;
+            uitvoer.put(karEncoded);
         }
 
         codePlek++;
@@ -47,22 +51,8 @@ while (! invoer.eof()) {
     }
     else {
         codePlek = 0;
-    }
+        uitvoer.put(kar);
 
- if (isdigit(prevKar) && kar == '\n') {
-        if (pin >= 0 && pin <= 9999) {
-
-            pin = pincodeFile;
-            digit1 = pin / 1000;
-            digit2 = (pin / 100) % 10;
-            digit3 = (pin / 10) % 10;
-            digit4 = pin % 10;
-
-            codePlek = 0;
-        }
-        else {
-            pincodeFile = 0;
-        }
     }
 
 
@@ -75,6 +65,7 @@ while (! invoer.eof()) {
             digit3 = (pin / 10) % 10;
             digit4 = pin % 10;
 
+            pincodeFile = 0;
             codePlek = 0;
         }
         else {
@@ -82,10 +73,7 @@ while (! invoer.eof()) {
         }
     }
 
-    prevKar = kar;
-	uitvoer.put(kar);
-	kar = invoer.get();
-	
+
 }//while
 }//void
 
@@ -96,8 +84,8 @@ ifstream fileInv;
 ofstream fileUit;
 int pincode;
 
-fileInv.open("/home/lucasallison/Documents/cppProjects/invoer.txt");
-fileUit.open("/home/lucasallison/Documents/cppProjects/uitvoer.txt");
+fileInv.open("../invoer.txt");
+fileUit.open("../uitvoer.txt");
 
 if (fileInv.fail()) {
 cout  << "De file kan niet geopend worden." << endl;
