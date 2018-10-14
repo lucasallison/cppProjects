@@ -80,6 +80,82 @@ while (! invoer.eof()) {
 }//while
 }//void
 
+void decoderenFile (int pin, ifstream &invoer, ofstream &uitvoer, int & k, int & r) {
+
+    int pincodeFile = 0;
+    int codePlek = 0;
+    int karInt; //omzetten char getal naar int getal
+    char kar;
+    char prevKar;
+    char karDecoded;
+    int digit1 = pin / 1000;
+    int digit2 = (pin / 100) % 10;
+    int digit3 = (pin / 10) % 10;
+    int digit4 = pin % 10;
+
+    while (! invoer.eof()) {
+
+        prevKar = karDecoded;
+        kar = invoer.get();
+        k++;
+
+
+
+        if (kar != '\n') {
+            if (codePlek == 0) {
+                karDecoded = (kar - digit1 + 128) % 128;
+                uitvoer.put(karDecoded);
+            }
+            if (codePlek == 1) {
+                karDecoded = (kar - digit2 + 128) % 128;
+                uitvoer.put(karDecoded);
+
+            }
+            if (codePlek == 2) {
+                karDecoded = (kar - digit3 + 128) % 128;
+                uitvoer.put(karDecoded);
+            }
+            if (codePlek == 3) {
+                karDecoded = (kar - digit4 + 128) % 128;
+                uitvoer.put(karDecoded);
+            }
+
+            codePlek++;
+            codePlek = codePlek % 4;
+        }
+        else {
+            codePlek = 0;
+            uitvoer.put(kar);
+            r++;
+
+        }
+
+        if (isdigit(karDecoded)) {
+            karInt = karDecoded - 48;
+            pincodeFile = pincodeFile * 10 + karInt;
+        }
+
+        if (isdigit(prevKar) && ! isdigit(karDecoded)) {
+            if (pincodeFile >= 0 && pincodeFile <= 9999) {
+
+                pin = pincodeFile;
+                digit1 = pin / 1000;
+                digit2 = (pin / 100) % 10;
+                digit3 = (pin / 10) % 10;
+                digit4 = pin % 10;
+
+                pincodeFile = 0;
+                codePlek = 0;
+            }
+            else {
+                pincodeFile = 0;
+            }
+        }
+
+
+    }//while
+}//void
+
 void draaiNummer (int a, int & x) {
 
     int p;
@@ -121,13 +197,14 @@ string uitvoerFileNaam;
 int pincode;
 int aantalKar = 0;
 int aantalRegelOvergangen = 0;
+int keuze;
 
 ifstream fileInv;
 ofstream fileUit;
 
-cout << "Geef de tekstfile, dat u gecodeert wilt hebben: ";
+cout << "Geef de invoer file naam op: "; //VERANDER DIT
 cin >> invoerFileNaam;
-cout << "Geef de naam van de file waar u uw gecodeerde tekst wilt hebben: ";
+cout << "Geef de uitvoer file naam op: ";
 cin >> uitvoerFileNaam;
 
 
@@ -142,18 +219,39 @@ return 1 ;
 
 cout << "Voer een pincode in: ";
 cin >> pincode;
+
 if (pincode < 0 || pincode > 9999) {
     cout << "Dit is een ongeldige pincode";
     return 1;
 }
 
-coderenFile (pincode, fileInv, fileUit, aantalKar, aantalRegelOvergangen);
+cout << "Als u wilt coderen, vul in 0. Als u wilt decoderen, vul in 1: " << endl;
+cin >> keuze;
 
-cout << "Het aantal karakters in de file: " << aantalKar << endl;
-cout << "Het aantal regelovergangen in de file " << aantalRegelOvergangen<< endl;
+if (keuze == 1) {
 
-fileInv.close();
-fileUit.close();
+    decoderenFile(pincode, fileInv,fileUit, aantalKar, aantalRegelOvergangen);
+
+    cout << "Het aantal karakters in de file: " << aantalKar << endl;
+    cout << "Het aantal regelovergangen in de file " << aantalRegelOvergangen << endl;
+
+    fileInv.close();
+    fileUit.close();
+
+
+}//decoderen file
+
+if (keuze == 0) {
+
+    coderenFile(pincode, fileInv, fileUit, aantalKar, aantalRegelOvergangen);
+
+    cout << "Het aantal karakters in de file: " << aantalKar << endl;
+    cout << "Het aantal regelovergangen in de file " << aantalRegelOvergangen << endl;
+
+    fileInv.close();
+    fileUit.close();
+
+}//coderen file
 
 
 fileInv.open (invoerFileNaam.c_str());
