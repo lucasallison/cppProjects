@@ -60,7 +60,7 @@ while (! invoer.eof()) {
 
 
     if (isdigit(prevKar) && ! isdigit(kar)) {
-        if (pin >= 0 && pin <= 9999) {
+        if (pincodeFile >= 0 && pincodeFile <= 9999) {
 
             pin = pincodeFile;
             digit1 = pin / 1000;
@@ -120,7 +120,7 @@ string invoerFileNaam;
 string uitvoerFileNaam;
 int pincode;
 int aantalKar = 0;
-int aantalRegelOvergangen = -1;
+int aantalRegelOvergangen = 0;
 
 ifstream fileInv;
 ofstream fileUit;
