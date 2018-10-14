@@ -1,6 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
+#include <climits>
 using namespace std;
 
 void coderenFile (int pin, ifstream &invoer, ofstream &uitvoer, int & k, int & r) {
@@ -79,22 +80,62 @@ while (! invoer.eof()) {
 }//while
 }//void
 
+void draaiNummer (int a, int & x) {
+
+    int p;
+
+    x=0;
+    while (a != 0) {
+        p = a%10;
+        x = x*10 + p;
+        a /=10;
+    }//while
+}//void
+
+void lychrelGetal (int &nummerInv, int nummerRev, int &her, bool &lychrelPot) {
+
+lychrelPot = false;
+draaiNummer(nummerInv, nummerRev);
+
+    while (nummerInv != nummerRev) {
+
+        if (nummerInv > INT_MAX - nummerRev) {
+            nummerInv = nummerRev;
+            lychrelPot = true;
+
+        }
+        else {
+            nummerInv = nummerInv + nummerRev;
+            draaiNummer(nummerInv, nummerRev);
+            her++;
+
+        }//else
+    }//while
+}//void
+
 
 int main () {
 
+string invoerFileNaam;
+string uitvoerFileNaam;
 int pincode;
 int aantalKar = 0;
-int aantalRegelOvergangen = 0;
+int aantalRegelOvergangen = -1;
 
 ifstream fileInv;
 ofstream fileUit;
 
+cout << "Geef de tekstfile, dat u gecodeert wilt hebben: ";
+cin >> invoerFileNaam;
+cout << "Geef de naam van de file waar u uw gecodeerde tekst wilt hebben: ";
+cin >> uitvoerFileNaam;
 
-fileInv.open("/home/lucasallison/Documents/cppProjects/invoer.txt");
-fileUit.open("/home/lucasallison/Documents/cppProjects/uitvoer.txt");
+
+fileInv.open(invoerFileNaam.c_str());
+fileUit.open(uitvoerFileNaam.c_str());
 
 if (fileInv.fail()) {
-cout  << "De file kan niet geopend worden." << endl;
+cout  << "De file "<< invoerFileNaam <<" kan niet geopend worden." << endl;
 return 1 ;
 }
 
@@ -114,6 +155,53 @@ cout << "Het aantal regelovergangen in de file " << aantalRegelOvergangen<< endl
 fileInv.close();
 fileUit.close();
 
+
+fileInv.open (invoerFileNaam.c_str());
+
+char karLychrel;
+char prevKarLychrel;
+int karIntLychrel;
+int getalFile = 0;
+int getalFileRev;
+int aantalIteraties = 0;
+bool isPotentialLychrel;
+
+while (! fileInv.eof()) {
+
+    prevKarLychrel = karLychrel;
+    karLychrel = fileInv.get();
+
+    if (isdigit(karLychrel)) {
+        karIntLychrel = karLychrel - 48;
+        getalFile = getalFile * 10 + karIntLychrel;
+    }
+
+    if (isdigit(prevKarLychrel) && ! isdigit(karLychrel)) {
+
+        cout << "Het getal in de file is: " << getalFile << endl;
+        lychrelGetal(getalFile, getalFileRev, aantalIteraties, isPotentialLychrel);
+
+
+            if (isPotentialLychrel) {
+                cout << "Dit is een potentieel Lychrel getal.";
+                cout << " Dit is bepaald na " << aantalIteraties << " herhalingen." << endl;
+
+            }
+            else {
+
+                cout << "Dit getal wordt een palindroom na " << aantalIteraties;
+                cout << " iteratie(s). Het getal is dan: " << getalFile << endl;
+            }
+
+        getalFile = 0;
+        aantalIteraties = 0;
+
+    }//if
+
+}//while
+
+
+fileInv.close();
 
 	return 0;
 }//main
