@@ -127,6 +127,7 @@ void decoderenFile (int pin, ifstream &invoer, ofstream &uitvoer, int & k, int &
             codePlek = 0;
             uitvoer.put(kar);
             r++;
+            karDecoded = 'a';//om aan de if te doen voor nieuwe pin
 
         }
 
