@@ -159,6 +159,9 @@ void decoderenFile (int pin, ifstream &invoer, ofstream &uitvoer, int & k, int &
 
 void vindPin (string fileNaam, int &pinPV) {
 
+
+
+    ifstream invoer;
     char karVindPin;
     int pinTest;
     int aantalThe = 0;
@@ -168,20 +171,15 @@ void vindPin (string fileNaam, int &pinPV) {
     int karDecodedPV;
     int codePlekPV = 0;
     int pincodeFilePV;
-    int karIntPV
+    int karIntPV;
+    char prevKarPV;
 
 
+    for (pinTest = 0; pinTest < 10000; pinTest++) {
 
+        invoer.open(fileNaam.c_str());
 
-    for (pinTest = 0, pinTest < 10000, pinTest++) {
-
-        invoer.open (fileNaam.c-str());
-
-        if (invoer.fail()) {
-            cout << "De file " << invoerFileNaam << " kan niet geopend worden." << endl;
-            return 1;
-        }
-
+        prevKarPV = karVindPin;
         karVindPin = invoer.get();
 
         aantalThe = 0;
@@ -192,7 +190,7 @@ void vindPin (string fileNaam, int &pinPV) {
         int digit3 = (pinTest / 10) % 10;
         int digit4 = pinTest % 10;
 
-        while (! invoer.eof()) {
+        while (!invoer.eof()) {
 
             if (karVindPin != '\n') {
                 if (codePlekPV == 0) {
@@ -211,8 +209,7 @@ void vindPin (string fileNaam, int &pinPV) {
 
                 codePlekPV++;
                 codePlekPV = codePlekPV % 4;
-            }
-            else {
+            } else {
                 codePlekPV = 0;
                 karDecodedPV = 'a';//om aan de if te doen voor nieuwe pin
 
@@ -223,7 +220,7 @@ void vindPin (string fileNaam, int &pinPV) {
                 pincodeFilePV = pincodeFilePV * 10 + karIntPV;
             }
 
-            if (isdigit(prevKar) && ! isdigit(karDecoded)) {
+            if (isdigit(prevKarPV) && !isdigit(karDecodedPV)) {
                 if (pincodeFilePV >= 0 && pincodeFilePV <= 9999) {
 
                     pinTest = pincodeFilePV;
@@ -234,21 +231,18 @@ void vindPin (string fileNaam, int &pinPV) {
 
                     pincodeFilePV = 0;
                     codePlekPV = 0;
-                }
-                else {
+                } else {
                     pincodeFilePV = 0;
                 }
             }
 
             if (plekThe == 0 && (karDecodedPV == 't' || karDecodedPV == 'T')) {
-                plekThe++
-            }
-            else if (plekThe == 1 && (karDecodedPV == 'h' || karDecodedPV == 'H')) {
-                plekThe++
-            }
-            else if (plekThe == 2 && (karDecodedPV == 'e' || karDecodedPV == 'E')) {
+                plekThe++;
+            } else if (plekThe == 1 && (karDecodedPV == 'h' || karDecodedPV == 'H')) {
+                plekThe++;
+            } else if (plekThe == 2 && (karDecodedPV == 'e' || karDecodedPV == 'E')) {
                 plekThe = 0;
-                aantalThe++
+                aantalThe++;
             } else {
                 plekThe = 0;
 
@@ -267,6 +261,7 @@ void vindPin (string fileNaam, int &pinPV) {
         invoer.close();
 
     }//for
+
 }//void
 
 void draaiNummer (int a, int & x) {
@@ -317,30 +312,30 @@ int keuzePV;
 ifstream fileInv;
 ofstream fileUit;
 
-cout << "Geef de invoer file naam op: "; //VERANDER DIT
+cout << "Geef de invoer file naam op: ";
 cin >> invoerFileNaam;
 cout << "Geef de uitvoer file naam op: ";
 cin >> uitvoerFileNaam;
 
 
-cout << "Wilt u coderen/decoderen vul in: 0. Bent u uw pin vergeten vul in: 1." << endline
+cout << "Wilt u coderen/decoderen vul in: 0. Bent u uw pin vergeten vul in: 1." << endl;
 cin >> eersteKeuze;
 
-if (eesteKeuze == 1) {
+if (eersteKeuze == 1) {
 
     pincode = 0;
 
     vindPin(invoerFileNaam, pincode);
     cout << "Uw pincode was waarschijnlijk: " << pincode << endl;
-    cout << "Wilt u de file decoderen? Als u dit wil, typ 1."
+    cout << "Wilt u de file decoderen? Als u dit wil, typ 1." << endl;
     cin >> keuzePV;
 
-    if (keuzePv == 1) {
+    if (keuzePV == 1) {
 
         fileInv.open(invoerFileNaam.c_str());
         fileUit.open(uitvoerFileNaam.c_str());
 
-        decoderenFile(pincode, fileInv, fileUit, aantalKar, aantalRegelOvergangen)
+        decoderenFile(pincode, fileInv, fileUit, aantalKar, aantalRegelOvergangen);
 
         cout << "Het aantal karakters in de file: " << aantalKar << endl;
         cout << "Het aantal regelovergangen in de file " << aantalRegelOvergangen << endl;
@@ -349,8 +344,6 @@ if (eesteKeuze == 1) {
         fileUit.close();
 
     }
-
-
 }
 
 if (eersteKeuze == 0) {
