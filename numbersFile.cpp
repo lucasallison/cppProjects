@@ -238,7 +238,6 @@ void vindPin (string fileNaam, int &pinPV) {
                 }
 
                 if (isdigit(prevKarPV) && !isdigit(karDecodedPV)) {
-
                     if (pincodeFilePV >= 0 && pincodeFilePV <= 9999) {
 
                         digit1 = pincodeFilePV / 1000;
@@ -281,9 +280,6 @@ void vindPin (string fileNaam, int &pinPV) {
 
         }
 
-        if(pinTest == 1234) {
-
-        }
 
         invoer.close();
 
@@ -336,10 +332,10 @@ cout << "Programeurs: Lucas Allison en Thom Stokx.\n"
      << "en een pincode om te coderen.\nMet behulp van de pincode codeert het"
      << " programma de invoerfile zodat er een 'geheimtekst' in de doelfile"
      << "gezet wordt.\nOok wordt er afgedrukt uit hoeveel karakters en regels"
-     << "de invoerfile bestaat.\n Een file kan ook gedecodeert worden. "
+     << "de invoerfile bestaat.\nEen file kan ook gedecodeert worden. "
      << "Als de gebruiker zijn pincode niet\n"
-     << "  meer weet kan de pincode bepaald worden, en de file vervolgens gedecodeert."
-     << "Gebruikte programma (editor and compiler): CLion.\n"
+     << "meer weet kan de pincode bepaald worden, en de file vervolgens gedecodeert."
+     << "Gebruikte programma (editor and compiler): CLion en Cmake.\n"
      << "Laatste bewerkingen van het programma gemaakt op: 15-10-2018.\n";
 
 
