@@ -1,9 +1,22 @@
+//Programeurs: Lucas Allison en Thom Stokx.
+//Naam bestand: AllisonStokx.cpp
+/*Dit programma vraagt de gebruiker om een invoerfile, een 'doelfile'
+  en een pincode om te coderen. Met behulp van de pincode codeert het
+  programma de invoerfile zodat er een 'geheimtekst' in de doelfile gezet wordt.
+  Ook wordt er afgedrukt uit hoeveel karakters en regels de invoerfile bestaat.
+  Een file kan ook gedecodeert worden. Als de gebruiker zijn pincode niet
+  meer weet kan de pincode bepaald worden, en de file vervolgens gedecodeert.
+*/
+//Gebruikte programma (editor and compiler): CLion en Cmake
+//Laatste bewerkingen van het programma gemaakt op: 15-10-2018
+
 #include <iostream>
 #include <fstream>
 #include <cstring>
 #include <climits>
 using namespace std;
 
+//functie om een file te coderen
 void coderenFile (int pin, ifstream &invoer, ofstream &uitvoer, int & k, int & r) {
 
 int pincodeFile = 0; //om pincode van file in op te slaan
@@ -24,7 +37,7 @@ while (! invoer.eof()) {
     kar = invoer.get();
 
 
-    //getal van file opslaan
+    //getal van file omzetten in nieuwe pin
     if (isdigit(kar)) {
         karInt = kar - 48;
         pincodeFile = pincodeFile * 10 + karInt;
@@ -62,7 +75,7 @@ while (! invoer.eof()) {
 
     }
 
-    //als
+    //als er een nieuwe pin in file is gevonden, oude pin vervangen
     if (isdigit(prevKar) && ! isdigit(kar)) {
         if (pincodeFile >= 0 && pincodeFile <= 9999) {
 
@@ -82,7 +95,7 @@ while (! invoer.eof()) {
 
 
 }//while
-}//void
+}//void coderenFile
 
 void decoderenFile (int pin, ifstream &invoer, ofstream &uitvoer, int & k, int & r) {
 
@@ -135,11 +148,13 @@ void decoderenFile (int pin, ifstream &invoer, ofstream &uitvoer, int & k, int &
 
         }
 
+        //getallen in de file omzetten in pin
         if (isdigit(karDecoded)) {
             karInt = karDecoded - 48;
             pincodeFile = pincodeFile * 10 + karInt;
         }
 
+        //als er een nieuwe pin in file is gevonden, oude pin vervangen
         if (isdigit(prevKar) && ! isdigit(karDecoded)) {
             if (pincodeFile >= 0 && pincodeFile <= 9999) {
 
@@ -159,7 +174,7 @@ void decoderenFile (int pin, ifstream &invoer, ofstream &uitvoer, int & k, int &
 
 
     }//while
-}//void
+}//void decoderenFile
 
 void vindPin (string fileNaam, int &pinPV) {
 
@@ -176,7 +191,7 @@ void vindPin (string fileNaam, int &pinPV) {
     int karIntPV;
     char prevKarPV;
 
-
+    //for loop, vult telkens een nieuwe pin in
     for (pinTest = 0; pinTest < 10000; pinTest++) {
 
         invoer.open(fileNaam.c_str());
@@ -192,6 +207,7 @@ void vindPin (string fileNaam, int &pinPV) {
         int digit3 = (pinTest / 10) % 10;
         int digit4 = pinTest % 10;
         if(invoer.is_open()) {
+            // while loop om een pincode te testen
             while (!invoer.eof()) {
                 if (karVindPin != '\n') {
                     if (codePlekPV == 0) {
@@ -222,13 +238,10 @@ void vindPin (string fileNaam, int &pinPV) {
                 }
 
                 if (isdigit(prevKarPV) && !isdigit(karDecodedPV)) {
-                   // cout << " ik zie een foutje... oei oei oei" << endl;
+
                     if (pincodeFilePV >= 0 && pincodeFilePV <= 9999) {
 
-                        // cout << " nieuwe pincode wordt " << pincodeFilePV << endl;
-
                         digit1 = pincodeFilePV / 1000;
-                        //" Dit is bepaald na "
                         digit2 = (pincodeFilePV / 100) % 10;
                         digit3 = (pincodeFilePV / 10) % 10;
                         digit4 = pincodeFilePV % 10;
@@ -238,33 +251,9 @@ void vindPin (string fileNaam, int &pinPV) {
                     } else {
                         pincodeFilePV = 0;
                     }
-                } else {
-
-                  //  cout << prevKarPV << " .. " << karDecodedPV << endl;
                 }
 
-                /*
-                 * if (isdigit(prevKar) && ! isdigit(karDecoded)) {
-                        if (pincodeFile >= 0 && pincodeFile <= 9999) {
-
-                            pin = pincodeFile;
-                            digit1 = pin / 1000;
-                            digit2 = (pin / 100) % 10;
-                            digit3 = (pin / 10) % 10;
-                            digit4 = pin % 10;
-
-                            pincodeFile = 0;
-                            codePlek = 0;
-                        }
-                        else {
-                            pincodeFile = 0;
-                        }
-                    }
-                 *
-                 *
-                 *
-                 * */
-
+                //tellen van het allen 'the' in de file
                 if (plekThe == 0 && (karDecodedPV == 't' || karDecodedPV == 'T')) {
                     plekThe++;
                 } else if (plekThe == 1 && (karDecodedPV == 'h' || karDecodedPV == 'H')) {
@@ -277,7 +266,6 @@ void vindPin (string fileNaam, int &pinPV) {
 
                 }
                 if(pinTest == 1234) {
-                   // cout << (char)karDecodedPV;
                 }
 
                 prevKarPV = karDecodedPV;
@@ -285,29 +273,24 @@ void vindPin (string fileNaam, int &pinPV) {
 
             }//while
         } // if isopen
-        else
-        {
-            cout << "Bestand kon niet geopend worden" << endl;
-        }
 
-
+        //bepalen beste pin met het meeste 'the'
         if (aantalThe > aantalThePrev) {
             aantalThePrev = aantalThe;
             pinPV = pinTest;
-            //cout << pinTest << " : " << aantalThe << endl;
+
         }
 
         if(pinTest == 1234) {
-            //cout << aantalThe << endl;
-            //throw 0;
+
         }
 
         invoer.close();
 
     }//for
+}//void vindPin
 
-}//void
-
+//functie om een getal om te draaien
 void draaiNummer (int a, int & x) {
 
     int p;
@@ -320,6 +303,7 @@ void draaiNummer (int a, int & x) {
     }//while
 }//void
 
+//fuctie om te kijken wanneer een getal een palindroom wordt of een potentieel lychrel getal
 void lychrelGetal (int &nummerInv, int nummerRev, int &her, bool &lychrelPot) {
 
 lychrelPot = false;
@@ -339,12 +323,28 @@ draaiNummer(nummerInv, nummerRev);
 
         }//else
     }//while
-}//void
+}//void lychrelGetal
 
 
 int main () {
 
-string invoerFileNaam;
+
+//infoblokje voor de gebruiker:
+cout << "Programeurs: Lucas Allison en Thom Stokx.\n"
+     << "Naam bestand: StokxAllison2.cpp\n"
+     << "Dit programma vraagt de gebruiker om een invoerfile, een 'doelfile'"
+     << "en een pincode om te coderen.\nMet behulp van de pincode codeert het"
+     << " programma de invoerfile zodat er een 'geheimtekst' in de doelfile"
+     << "gezet wordt.\nOok wordt er afgedrukt uit hoeveel karakters en regels"
+     << "de invoerfile bestaat.\n Een file kan ook gedecodeert worden. "
+     << "Als de gebruiker zijn pincode niet\n"
+     << "  meer weet kan de pincode bepaald worden, en de file vervolgens gedecodeert."
+     << "Gebruikte programma (editor and compiler): CLion.\n"
+     << "Laatste bewerkingen van het programma gemaakt op: 15-10-2018.\n";
+
+
+
+    string invoerFileNaam;
 string uitvoerFileNaam;
 int pincode; //de pincode die de gebruiker invoert
 int aantalKar = 0; //aantal karakters in de file
@@ -363,12 +363,12 @@ cout << "Geef de uitvoer file naam op: ";
 cin >> uitvoerFileNaam;
 
 
-cout << "Wilt u de file coderen/decoderen vul in: 0. Bent u uw pin vergeten vul in: 1." << endl;
+cout << "Wilt u de file coderen/decoderen vul in: 0. Bent u uw pin vergeten vul in: -1." << endl;
 cin >> eersteKeuze;
 
 
 //pincode vinden
-if (eersteKeuze == 1) {
+if (eersteKeuze == -1) {
 
     pincode = 0;
 
@@ -377,6 +377,7 @@ if (eersteKeuze == 1) {
     cout << "Wilt u de file decoderen? Als u dit wil, typ 1." << endl;
     cin >> keuzePV;
 
+    //decodeert file
     if (keuzePV == 1) {
 
         fileInv.open(invoerFileNaam.c_str());
@@ -391,7 +392,7 @@ if (eersteKeuze == 1) {
         fileUit.close();
 
     } //if
-} //if eerste keuze
+} //if, eerste keuze
 
 if (eersteKeuze == 0) {
 
