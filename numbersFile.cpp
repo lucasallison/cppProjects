@@ -157,6 +157,118 @@ void decoderenFile (int pin, ifstream &invoer, ofstream &uitvoer, int & k, int &
     }//while
 }//void
 
+void vindPin (string fileNaam, int &pinPV) {
+
+    char karVindPin;
+    int pinTest;
+    int aantalThe = 0;
+    int aantalThePrev;
+    int plekThe;
+
+    int karDecodedPV;
+    int codePlekPV = 0;
+    int pincodeFilePV;
+    int karIntPV
+
+
+
+
+    for (pinTest = 0, pinTest < 10000, pinTest++) {
+
+        invoer.open (fileNaam.c-str());
+
+        if (invoer.fail()) {
+            cout << "De file " << invoerFileNaam << " kan niet geopend worden." << endl;
+            return 1;
+        }
+
+        karVindPin = invoer.get();
+
+        aantalThe = 0;
+        plekThe = 0;
+
+        int digit1 = pinTest / 1000;
+        int digit2 = (pinTest / 100) % 10;
+        int digit3 = (pinTest / 10) % 10;
+        int digit4 = pinTest % 10;
+
+        while (! invoer.eof()) {
+
+            if (karVindPin != '\n') {
+                if (codePlekPV == 0) {
+                    karDecodedPV = (karVindPin - digit1 + 128) % 128;
+                }
+                if (codePlekPV == 1) {
+                    karDecodedPV = (karVindPin - digit2 + 128) % 128;
+
+                }
+                if (codePlekPV == 2) {
+                    karDecodedPV = (karVindPin - digit3 + 128) % 128;
+                }
+                if (codePlekPV == 3) {
+                    karDecodedPV = (karVindPin - digit4 + 128) % 128;
+                }
+
+                codePlekPV++;
+                codePlekPV = codePlekPV % 4;
+            }
+            else {
+                codePlekPV = 0;
+                karDecodedPV = 'a';//om aan de if te doen voor nieuwe pin
+
+            }
+
+            if (isdigit(karDecodedPV)) {
+                karIntPV = karDecodedPV - 48;
+                pincodeFilePV = pincodeFilePV * 10 + karIntPV;
+            }
+
+            if (isdigit(prevKar) && ! isdigit(karDecoded)) {
+                if (pincodeFilePV >= 0 && pincodeFilePV <= 9999) {
+
+                    pinTest = pincodeFilePV;
+                    digit1 = pinTest / 1000;
+                    digit2 = (pinTest / 100) % 10;
+                    digit3 = (pinTest / 10) % 10;
+                    digit4 = pinTest % 10;
+
+                    pincodeFilePV = 0;
+                    codePlekPV = 0;
+                }
+                else {
+                    pincodeFilePV = 0;
+                }
+            }
+
+            if (plekThe == 0 && (karDecodedPV == 't' || karDecodedPV == 'T')) {
+                plekThe++
+            }
+            else if (plekThe == 1 && (karDecodedPV == 'h' || karDecodedPV == 'H')) {
+                plekThe++
+            }
+            else if (plekThe == 2 && (karDecodedPV == 'e' || karDecodedPV == 'E')) {
+                plekThe = 0;
+                aantalThe++
+            } else {
+                plekThe = 0;
+
+            }
+
+        }//while
+
+
+
+        if (aantalThe > aantalThePrev) {
+            aantalThePrev = aantalThe;
+            pinPV = pinTest;
+
+        }
+
+        invoer.close();
+
+    }//for
+}//void
+
 void draaiNummer (int a, int & x) {
 
     int p;
@@ -199,6 +311,8 @@ int pincode;
 int aantalKar = 0;
 int aantalRegelOvergangen = 0;
 int keuze;
+int eersteKeuze;
+int keuzePV;
 
 ifstream fileInv;
 ofstream fileUit;
@@ -209,96 +323,127 @@ cout << "Geef de uitvoer file naam op: ";
 cin >> uitvoerFileNaam;
 
 
-fileInv.open(invoerFileNaam.c_str());
-fileUit.open(uitvoerFileNaam.c_str());
+cout << "Wilt u coderen/decoderen vul in: 0. Bent u uw pin vergeten vul in: 1." << endline
+cin >> eersteKeuze;
 
-if (fileInv.fail()) {
-cout  << "De file "<< invoerFileNaam <<" kan niet geopend worden." << endl;
-return 1 ;
-}
+if (eesteKeuze == 1) {
 
+    pincode = 0;
 
-cout << "Voer een pincode in: ";
-cin >> pincode;
+    vindPin(invoerFileNaam, pincode);
+    cout << "Uw pincode was waarschijnlijk: " << pincode << endl;
+    cout << "Wilt u de file decoderen? Als u dit wil, typ 1."
+    cin >> keuzePV;
 
-if (pincode < 0 || pincode > 9999) {
-    cout << "Dit is een ongeldige pincode";
-    return 1;
-}
+    if (keuzePv == 1) {
 
-cout << "Als u wilt coderen, vul in 0. Als u wilt decoderen, vul in 1: " << endl;
-cin >> keuze;
+        fileInv.open(invoerFileNaam.c_str());
+        fileUit.open(uitvoerFileNaam.c_str());
 
-if (keuze == 1) {
+        decoderenFile(pincode, fileInv, fileUit, aantalKar, aantalRegelOvergangen)
 
-    decoderenFile(pincode, fileInv,fileUit, aantalKar, aantalRegelOvergangen);
+        cout << "Het aantal karakters in de file: " << aantalKar << endl;
+        cout << "Het aantal regelovergangen in de file " << aantalRegelOvergangen << endl;
 
-    cout << "Het aantal karakters in de file: " << aantalKar << endl;
-    cout << "Het aantal regelovergangen in de file " << aantalRegelOvergangen << endl;
+        fileInv.close();
+        fileUit.close();
 
-    fileInv.close();
-    fileUit.close();
-
-
-}//decoderen file
-
-if (keuze == 0) {
-
-    coderenFile(pincode, fileInv, fileUit, aantalKar, aantalRegelOvergangen);
-
-    cout << "Het aantal karakters in de file: " << aantalKar << endl;
-    cout << "Het aantal regelovergangen in de file " << aantalRegelOvergangen << endl;
-
-    fileInv.close();
-    fileUit.close();
-
-}//coderen file
-
-
-fileInv.open (invoerFileNaam.c_str());
-
-char karLychrel;
-char prevKarLychrel;
-int karIntLychrel;
-int getalFile = 0;
-int getalFileRev;
-int aantalIteraties = 0;
-bool isPotentialLychrel;
-
-while (! fileInv.eof()) {
-
-    prevKarLychrel = karLychrel;
-    karLychrel = fileInv.get();
-
-    if (isdigit(karLychrel)) {
-        karIntLychrel = karLychrel - 48;
-        getalFile = getalFile * 10 + karIntLychrel;
     }
 
-    if (isdigit(prevKarLychrel) && ! isdigit(karLychrel)) {
 
-        cout << "Het getal in de file is: " << getalFile << endl;
-        lychrelGetal(getalFile, getalFileRev, aantalIteraties, isPotentialLychrel);
+}
+
+if (eersteKeuze == 0) {
+
+    fileInv.open(invoerFileNaam.c_str());
+    fileUit.open(uitvoerFileNaam.c_str());
+
+    if (fileInv.fail()) {
+        cout << "De file " << invoerFileNaam << " kan niet geopend worden." << endl;
+        return 1;
+    }
+
+
+    cout << "Voer een pincode in: ";
+    cin >> pincode;
+
+    if (pincode < 0 || pincode > 9999) {
+        cout << "Dit is een ongeldige pincode";
+        return 1;
+    }
+
+    cout << "Als u wilt coderen, vul in 0. Als u wilt decoderen, vul in 1: " << endl;
+    cin >> keuze;
+
+    if (keuze == 1) {
+
+        decoderenFile(pincode, fileInv, fileUit, aantalKar, aantalRegelOvergangen);
+
+        cout << "Het aantal karakters in de file: " << aantalKar << endl;
+        cout << "Het aantal regelovergangen in de file " << aantalRegelOvergangen << endl;
+
+        fileInv.close();
+        fileUit.close();
+
+
+    }//decoderen file
+
+    if (keuze == 0) {
+
+        coderenFile(pincode, fileInv, fileUit, aantalKar, aantalRegelOvergangen);
+
+        cout << "Het aantal karakters in de file: " << aantalKar << endl;
+        cout << "Het aantal regelovergangen in de file " << aantalRegelOvergangen << endl;
+
+        fileInv.close();
+        fileUit.close();
+
+    }//coderen file
+
+
+    fileInv.open(invoerFileNaam.c_str());
+
+    char karLychrel;
+    char prevKarLychrel;
+    int karIntLychrel;
+    int getalFile = 0;
+    int getalFileRev;
+    int aantalIteraties = 0;
+    bool isPotentialLychrel;
+
+    while (!fileInv.eof()) {
+
+        prevKarLychrel = karLychrel;
+        karLychrel = fileInv.get();
+
+        if (isdigit(karLychrel)) {
+            karIntLychrel = karLychrel - 48;
+            getalFile = getalFile * 10 + karIntLychrel;
+        }
+
+        if (isdigit(prevKarLychrel) && !isdigit(karLychrel)) {
+
+            cout << "Het getal in de file is: " << getalFile << endl;
+            lychrelGetal(getalFile, getalFileRev, aantalIteraties, isPotentialLychrel);
 
 
             if (isPotentialLychrel) {
                 cout << "Dit is een potentieel Lychrel getal.";
                 cout << " Dit is bepaald na " << aantalIteraties << " herhalingen." << endl;
 
-            }
-            else {
+            } else {
 
                 cout << "Dit getal wordt een palindroom na " << aantalIteraties;
                 cout << " iteratie(s). Het getal is dan: " << getalFile << endl;
             }
 
-        getalFile = 0;
-        aantalIteraties = 0;
+            getalFile = 0;
+            aantalIteraties = 0;
 
-    }//if
+        }//if
 
-}//while
-
+    }//while
+}//if
 
 fileInv.close();
 
