@@ -6,12 +6,13 @@ using namespace std;
 
 void coderenFile (int pin, ifstream &invoer, ofstream &uitvoer, int & k, int & r) {
 
-int pincodeFile = 0;
-int codePlek = 0;
+int pincodeFile = 0; //om pincode van file in op te slaan
+int codePlek = 0; // bepaalt welke digit het is
 int karInt; //omzetten char getal naar int getal
-char kar;
-char prevKar;
-char karEncoded;
+char kar; //karakter in file
+char prevKar; //vorige karakter in file
+char karEncoded; // kar omgezet met de pin
+//opgespliste pin
 int digit1 = pin / 1000;
 int digit2 = (pin / 100) % 10;
 int digit3 = (pin / 10) % 10;
@@ -21,14 +22,15 @@ while (! invoer.eof()) {
 
     prevKar = kar;
     kar = invoer.get();
-    k++;
 
+
+    //getal van file opslaan
     if (isdigit(kar)) {
         karInt = kar - 48;
         pincodeFile = pincodeFile * 10 + karInt;
     }
 
-
+    //aannpassen kar naar karEncoded
     if (kar != '\n') {
         if (codePlek == 0) {
             karEncoded = (kar + digit1 + 128) % 128;
@@ -50,6 +52,8 @@ while (! invoer.eof()) {
 
         codePlek++;
         codePlek = codePlek % 4;
+        k++;
+
     }
     else {
         codePlek = 0;
@@ -58,7 +62,7 @@ while (! invoer.eof()) {
 
     }
 
-
+    //als
     if (isdigit(prevKar) && ! isdigit(kar)) {
         if (pincodeFile >= 0 && pincodeFile <= 9999) {
 
@@ -97,8 +101,6 @@ void decoderenFile (int pin, ifstream &invoer, ofstream &uitvoer, int & k, int &
 
         prevKar = karDecoded;
         kar = invoer.get();
-        k++;
-
 
 
         if (kar != '\n') {
@@ -122,6 +124,8 @@ void decoderenFile (int pin, ifstream &invoer, ofstream &uitvoer, int & k, int &
 
             codePlek++;
             codePlek = codePlek % 4;
+            k++;
+
         }
         else {
             codePlek = 0;
@@ -159,13 +163,11 @@ void decoderenFile (int pin, ifstream &invoer, ofstream &uitvoer, int & k, int &
 
 void vindPin (string fileNaam, int &pinPV) {
 
-
-
     ifstream invoer;
-    char karVindPin;
+    char karVindPin = '\0';
     int pinTest;
     int aantalThe = 0;
-    int aantalThePrev;
+    int aantalThePrev = 0;
     int plekThe;
 
     int karDecodedPV;
@@ -189,73 +191,115 @@ void vindPin (string fileNaam, int &pinPV) {
         int digit2 = (pinTest / 100) % 10;
         int digit3 = (pinTest / 10) % 10;
         int digit4 = pinTest % 10;
+        if(invoer.is_open()) {
+            while (!invoer.eof()) {
+                if (karVindPin != '\n') {
+                    if (codePlekPV == 0) {
+                        karDecodedPV = (karVindPin - digit1 + 128) % 128;
+                    }
+                    if (codePlekPV == 1) {
+                        karDecodedPV = (karVindPin - digit2 + 128) % 128;
 
-        while (!invoer.eof()) {
+                    }
+                    if (codePlekPV == 2) {
+                        karDecodedPV = (karVindPin - digit3 + 128) % 128;
+                    }
+                    if (codePlekPV == 3) {
+                        karDecodedPV = (karVindPin - digit4 + 128) % 128;
+                    }
 
-            if (karVindPin != '\n') {
-                if (codePlekPV == 0) {
-                    karDecodedPV = (karVindPin - digit1 + 128) % 128;
-                }
-                if (codePlekPV == 1) {
-                    karDecodedPV = (karVindPin - digit2 + 128) % 128;
-
-                }
-                if (codePlekPV == 2) {
-                    karDecodedPV = (karVindPin - digit3 + 128) % 128;
-                }
-                if (codePlekPV == 3) {
-                    karDecodedPV = (karVindPin - digit4 + 128) % 128;
-                }
-
-                codePlekPV++;
-                codePlekPV = codePlekPV % 4;
-            } else {
-                codePlekPV = 0;
-                karDecodedPV = 'a';//om aan de if te doen voor nieuwe pin
-
-            }
-
-            if (isdigit(karDecodedPV)) {
-                karIntPV = karDecodedPV - 48;
-                pincodeFilePV = pincodeFilePV * 10 + karIntPV;
-            }
-
-            if (isdigit(prevKarPV) && !isdigit(karDecodedPV)) {
-                if (pincodeFilePV >= 0 && pincodeFilePV <= 9999) {
-
-                    pinTest = pincodeFilePV;
-                    digit1 = pinTest / 1000;
-                    digit2 = (pinTest / 100) % 10;
-                    digit3 = (pinTest / 10) % 10;
-                    digit4 = pinTest % 10;
-
-                    pincodeFilePV = 0;
-                    codePlekPV = 0;
+                    codePlekPV++;
+                    codePlekPV = codePlekPV % 4;
                 } else {
-                    pincodeFilePV = 0;
+                    codePlekPV = 0;
+                    plekThe = 0;
+                    karDecodedPV = '\n';
                 }
-            }
 
-            if (plekThe == 0 && (karDecodedPV == 't' || karDecodedPV == 'T')) {
-                plekThe++;
-            } else if (plekThe == 1 && (karDecodedPV == 'h' || karDecodedPV == 'H')) {
-                plekThe++;
-            } else if (plekThe == 2 && (karDecodedPV == 'e' || karDecodedPV == 'E')) {
-                plekThe = 0;
-                aantalThe++;
-            } else {
-                plekThe = 0;
+                if (isdigit(karDecodedPV)) {
+                    karIntPV = karDecodedPV - 48;
+                    pincodeFilePV = pincodeFilePV * 10 + karIntPV;
+                }
 
-            }
+                if (isdigit(prevKarPV) && !isdigit(karDecodedPV)) {
+                   // cout << " ik zie een foutje... oei oei oei" << endl;
+                    if (pincodeFilePV >= 0 && pincodeFilePV <= 9999) {
 
-        }//while
+                        // cout << " nieuwe pincode wordt " << pincodeFilePV << endl;
 
+                        digit1 = pincodeFilePV / 1000;
+                        //" Dit is bepaald na "
+                        digit2 = (pincodeFilePV / 100) % 10;
+                        digit3 = (pincodeFilePV / 10) % 10;
+                        digit4 = pincodeFilePV % 10;
+
+                        pincodeFilePV = 0;
+                        codePlekPV = 0;
+                    } else {
+                        pincodeFilePV = 0;
+                    }
+                } else {
+
+                  //  cout << prevKarPV << " .. " << karDecodedPV << endl;
+                }
+
+                /*
+                 * if (isdigit(prevKar) && ! isdigit(karDecoded)) {
+                        if (pincodeFile >= 0 && pincodeFile <= 9999) {
+
+                            pin = pincodeFile;
+                            digit1 = pin / 1000;
+                            digit2 = (pin / 100) % 10;
+                            digit3 = (pin / 10) % 10;
+                            digit4 = pin % 10;
+
+                            pincodeFile = 0;
+                            codePlek = 0;
+                        }
+                        else {
+                            pincodeFile = 0;
+                        }
+                    }
+                 *
+                 *
+                 *
+                 * */
+
+                if (plekThe == 0 && (karDecodedPV == 't' || karDecodedPV == 'T')) {
+                    plekThe++;
+                } else if (plekThe == 1 && (karDecodedPV == 'h' || karDecodedPV == 'H')) {
+                    plekThe++;
+                } else if (plekThe == 2 && (karDecodedPV == 'e' || karDecodedPV == 'E')) {
+                    plekThe = 0;
+                    aantalThe++;
+                } else {
+                    plekThe = 0;
+
+                }
+                if(pinTest == 1234) {
+                   // cout << (char)karDecodedPV;
+                }
+
+                prevKarPV = karDecodedPV;
+                karVindPin = invoer.get();
+
+            }//while
+        } // if isopen
+        else
+        {
+            cout << "Bestand kon niet geopend worden" << endl;
+        }
 
 
         if (aantalThe > aantalThePrev) {
             aantalThePrev = aantalThe;
             pinPV = pinTest;
+            //cout << pinTest << " : " << aantalThe << endl;
+        }
 
+        if(pinTest == 1234) {
+            //cout << aantalThe << endl;
+            //throw 0;
         }
 
         invoer.close();
@@ -302,9 +346,10 @@ int main () {
 
 string invoerFileNaam;
 string uitvoerFileNaam;
-int pincode;
-int aantalKar = 0;
-int aantalRegelOvergangen = 0;
+int pincode; //de pincode die de gebruiker invoert
+int aantalKar = 0; //aantal karakters in de file
+int aantalRegelOvergangen = 0; //aantal regelovergangen in de file
+//om te bepalen welke functies worden aangeroepen
 int keuze;
 int eersteKeuze;
 int keuzePV;
@@ -318,9 +363,11 @@ cout << "Geef de uitvoer file naam op: ";
 cin >> uitvoerFileNaam;
 
 
-cout << "Wilt u coderen/decoderen vul in: 0. Bent u uw pin vergeten vul in: 1." << endl;
+cout << "Wilt u de file coderen/decoderen vul in: 0. Bent u uw pin vergeten vul in: 1." << endl;
 cin >> eersteKeuze;
 
+
+//pincode vinden
 if (eersteKeuze == 1) {
 
     pincode = 0;
@@ -343,14 +390,15 @@ if (eersteKeuze == 1) {
         fileInv.close();
         fileUit.close();
 
-    }
-}
+    } //if
+} //if eerste keuze
 
 if (eersteKeuze == 0) {
 
     fileInv.open(invoerFileNaam.c_str());
     fileUit.open(uitvoerFileNaam.c_str());
 
+    //checken of file kan
     if (fileInv.fail()) {
         cout << "De file " << invoerFileNaam << " kan niet geopend worden." << endl;
         return 1;
@@ -360,14 +408,16 @@ if (eersteKeuze == 0) {
     cout << "Voer een pincode in: ";
     cin >> pincode;
 
+    //afwijzen ongeldige pincode
     if (pincode < 0 || pincode > 9999) {
         cout << "Dit is een ongeldige pincode";
         return 1;
     }
 
-    cout << "Als u wilt coderen, vul in 0. Als u wilt decoderen, vul in 1: " << endl;
+    cout << "Als u de file wilt coderen, vul in 0. Als u de file wilt decoderen, vul in 1: " << endl;
     cin >> keuze;
 
+    //decoderen file
     if (keuze == 1) {
 
         decoderenFile(pincode, fileInv, fileUit, aantalKar, aantalRegelOvergangen);
@@ -378,9 +428,9 @@ if (eersteKeuze == 0) {
         fileInv.close();
         fileUit.close();
 
+    } //if keuze decoderen
 
-    }//decoderen file
-
+    //coderen file
     if (keuze == 0) {
 
         coderenFile(pincode, fileInv, fileUit, aantalKar, aantalRegelOvergangen);
@@ -391,29 +441,33 @@ if (eersteKeuze == 0) {
         fileInv.close();
         fileUit.close();
 
-    }//coderen file
+    } //if keuze coderen
 
+}//if eerste keuze
 
+    //lychrel getallen bepalen
     fileInv.open(invoerFileNaam.c_str());
 
     char karLychrel;
     char prevKarLychrel;
-    int karIntLychrel;
-    int getalFile = 0;
-    int getalFileRev;
+    int karIntLychrel; //de char van de .get omzetten in int
+    int getalFile = 0; //om het getal van de file in op te slaan
+    int getalFileRev; //omgedraaide van getalFile
     int aantalIteraties = 0;
-    bool isPotentialLychrel;
+    bool isPotentialLychrel; //om te kijken of het een potentieel lychrel getal is
 
     while (!fileInv.eof()) {
 
         prevKarLychrel = karLychrel;
         karLychrel = fileInv.get();
 
+        //getal ophalen uit de file
         if (isdigit(karLychrel)) {
             karIntLychrel = karLychrel - 48;
             getalFile = getalFile * 10 + karIntLychrel;
         }
 
+        //Bepalen of het een lychrel getal is
         if (isdigit(prevKarLychrel) && !isdigit(karLychrel)) {
 
             cout << "Het getal in de file is: " << getalFile << endl;
@@ -436,9 +490,8 @@ if (eersteKeuze == 0) {
         }//if
 
     }//while
-}//if
 
-fileInv.close();
+    fileInv.close();
 
 	return 0;
 }//main
