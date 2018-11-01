@@ -3,8 +3,6 @@ using namespace std;
 
 
 
-
-
 int hoofdmenu () {
 
     char keuzeGebruiker;
@@ -47,8 +45,7 @@ int hoofdmenu () {
               keuzeGebruiker != 'P' || keuzeGebruiker != 'p' ||
               keuzeGebruiker != 'S' || keuzeGebruiker != 's');
 
-
-
+    
 }//hoofdmenu
 
 
