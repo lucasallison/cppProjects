@@ -5,12 +5,10 @@ using namespace std;
 
 
 int randomGetal ( ) {
-    int getalR;
     static int getal = 42;
-    getalR = ( 221 * getal + 1 ) % 1000;
-    return getalR;
+    getal = ( 221 * getal + 1 ) % 1000;
+    return getal;
 }//randomgetal
-
 
 
 char gebruikerInvoer () {
@@ -51,8 +49,8 @@ nonogram::nonogram() {
 
     hoogte = 10;
     breedte = 10;
-    nonogram voorbeeld;
-    voorbeeld.maakSchoon();
+    maakSchoon();
+
 
 
 }
@@ -61,15 +59,15 @@ void nonogram::drukAf() {
     int i;
     int j;
 
-    for (j = 0; j <= breedte + 3; j++) {
+    for (j = 0; j < breedte + 2; j++) {
         cout << "+ ";
     }
 
-
+break;
     for (i = 0; i <= hoogte; i++) {
         cout << "\n";
         cout << "+ ";
-        for (j = 0; j < breedte + 2; j++) {
+        for (j = 0; j < breedte; j++) {
             if (nono[i][j]) {
                 cout << "X ";
 
@@ -82,7 +80,7 @@ void nonogram::drukAf() {
     }//forOne
 
     cout << "\n";
-    for (j = 0; j <= breedte + 3; j++) {
+    for (j = 0; j < breedte + 2; j++) {
         cout << "+ ";
     }
     cout << "\n";
@@ -151,16 +149,16 @@ void submenu (nonogram & nono) {
 
     char keuzeSubmenu;
 
-    cout << "Welkom in het submenu. Maak een keuze uit: A, B of T" << endl;
+    cout << "Welkom in het submenu. Maak een keuze uit: (P)ercentage wijzigen, (G)rootte wijzigen of (T)erug" << endl;
 
     do {
        keuzeSubmenu = gebruikerInvoer();
         switch (keuzeSubmenu) {
 
-            case 'A': case 'a':
-                cout << "U heeft A/a geantwoord" << endl;
+            case 'P': case 'p':
+                cout << "P" << endl;
                 break;
-            case 'B': case 'b':
+            case 'G': case 'g':
                 cout << "U heeft B/b geantwoord" << endl;
                 break;
             case 'T':  case 't':
@@ -193,16 +191,19 @@ void hoofdmenu () {
             case 'C': case 'c':
                 nono.maakSchoon();
                 break;
-            case 'R': case 'r':
-                nono.vulRandom();
-                nono.drukAf();
-                break;
             case 'P': case 'p':
                 submenu(nono);
+                break;
+            case 'R': case 'r':
+                nono.vulRandom();
+                break;
+            case 'S': case 's':
+                cout << "Einde programma" << endl;
                 break;
             default:
                 cout << "Vul een valide letter in:" << endl;
         }//switch
+
     }//while
 }//hoofdmenu
 
@@ -211,6 +212,7 @@ void hoofdmenu () {
 
 
 int main () {
+
 
     hoofdmenu();
 
