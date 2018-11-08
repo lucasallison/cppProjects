@@ -21,9 +21,9 @@ char gebruikerInvoer () {
 
 }
 
-int leesGetal(){
+int leesGetal(int max){
 
-    int max = 100;
+
     int getal = 0;
     char invoer;
 
@@ -36,7 +36,7 @@ int leesGetal(){
             getal = getal * 10 + invoer - '0';
         }
 
-        if (getal > max) {
+        if (getal >= max) {
             do {
                 getal = getal/10;
             } while (getal > max);
@@ -44,7 +44,6 @@ int leesGetal(){
         cin.get(invoer);
     }
 
-    getal = getal * 10 - 1;
     return getal;
 }
 
@@ -61,6 +60,7 @@ class nonogram {
         void maakSchoon ();
         void vulRandom ();
         void zetPercentage ();
+        void zetAfmetingen();
 
     private:
 
@@ -76,8 +76,8 @@ class nonogram {
 
 nonogram::nonogram() {
 
-    hoogte = 4;
-    breedte = 4;
+    hoogte = 10;
+    breedte = 10;
     percentage = 499;
     maakSchoon();
 
@@ -88,8 +88,16 @@ nonogram::nonogram() {
 void nonogram::zetPercentage ( ) {
 
     cout << "Vul een percentage in" << endl;
-    percentage = leesGetal ();
+    percentage = leesGetal (100) * 10;
 }//zetpercentage
+
+void nonogram::zetAfmetingen(){
+
+    cout << "Vul de hoogte in:" << endl;
+    hoogte = leesGetal(50);
+    cout << "Vul de breedte in:" << endl;
+    breedte = leesGetal(50);
+}//zetAfmetingen
 
 void nonogram::drukAf() {
     int i;
@@ -167,10 +175,10 @@ void submenu (nonogram & nono) {
                 nono.zetPercentage();
                 break;
             case 'G': case 'g':
-                cout << "U heeft B/b geantwoord" << endl;
+                nono.zetAfmetingen();
                 break;
             case 'T':  case 't':
-                cout << "Welkom in het hoofdmenu. Maak een keuze uit: s(C)hoon, (R)andom, (P)arameters of (S)toppen" << endl;
+                cout << "Welkom in het hoofdmenu. " << endl;
                 break;
             default:
                 cout << "Vul een valide letter in:" << endl;
@@ -209,7 +217,7 @@ void hoofdmenu () {
                 cout << "Einde van het programma" << endl;
                 break;
             default:
-                cout << "Vul een valide letter in:" << endl;
+                cout << "Vul een valide letter in!" << endl;
         }//switch
     }//while
 }//hoofdmenu
