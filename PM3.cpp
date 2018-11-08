@@ -19,6 +19,7 @@ char gebruikerInvoer () {
         cin.get(invoer);
     }
 
+    return invoer;
 }
 
 int leesGetal(int max){
@@ -61,13 +62,22 @@ class nonogram {
         void vulRandom ();
         void zetPercentage ();
         void zetAfmetingen();
+        void beweegLinks ();
+        void beweegOmhoog();
+        void beweegOmlaag();
+        void beweegRechts();
+        void toggle ();
 
     private:
 
         bool nono[MAX][MAX];
         int hoogte;
         int breedte;
+        int hoogteCurser;
+        int breedteCurser;
         int percentage;
+        int plekKolom;
+        int plekRij;
 
 
 
@@ -78,10 +88,12 @@ nonogram::nonogram() {
 
     hoogte = 10;
     breedte = 10;
+    hoogteCurser = 0;
+    breedteCurser = 0;
     percentage = 499;
+    plekKolom = 0;
+    plekRij = 0;
     maakSchoon();
-
-
 
 }
 
@@ -99,6 +111,42 @@ void nonogram::zetAfmetingen(){
     breedte = leesGetal(50);
 }//zetAfmetingen
 
+
+void nonogram::beweegLinks () {
+    if (breedteCurser != 0) {
+        breedteCurser = breedteCurser - 1;
+    }
+}//beweegLinks
+
+void nonogram::beweegOmhoog () {
+    if (hoogteCurser != 0) {
+        hoogteCurser = hoogteCurser - 1;
+    }
+}//beweegLinks
+
+void nonogram::beweegOmlaag () {
+    if (hoogteCurser != hoogte) {
+        hoogteCurser = hoogteCurser + 1;
+    }
+}//beweegOmlaag
+
+void nonogram::beweegRechts () {
+    if (breedteCurser != breedte) {
+        breedteCurser = breedteCurser + 1;
+    }
+}//beweegRechts
+
+void nonogram::toggle() {
+
+    if (nono[hoogteCurser][breedteCurser]) {
+        nono[hoogteCurser][breedteCurser] = false;
+    } else {
+        nono[hoogteCurser][breedteCurser] = true;
+    }
+
+
+}//toggle
+
 void nonogram::drukAf() {
     int i;
     int j;
@@ -111,13 +159,21 @@ void nonogram::drukAf() {
         cout << "\n";
         cout << "+ ";
         for (j = 0; j < breedte; j++) {
-            if (nono[i][j]) {
-                cout << "X ";
+
+            if (i == hoogteCurser && j == breedteCurser ) {
+
+                cout << "* ";
 
             } else {
-                cout << "  ";
 
-            }
+                if (nono[i][j]) {
+                    cout << "X ";
+
+                } else {
+                    cout << "  ";
+                }
+
+            }//ifCurser
         }//forTwo
         cout << "+";
     }//forOne
@@ -200,7 +256,8 @@ void hoofdmenu () {
 
     while (keuzeHoofdmenu != 's' && keuzeHoofdmenu != 'S') {
         nono.drukAf();
-        cout << "Maak een keuze uit: s(C)hoon, (R)andom, (P)arameters of (S)toppen" << endl;
+        cout << "Maak een keuze uit: s(C)hoon, (R)andom, (P)arameters, (T)oggle of (S)toppen" << endl;
+        cout << "Om te curser te bewegen: (A)links, (W)omhoog , (Z)omlaag, (D)rechts" << endl;
         keuzeHoofdmenu = gebruikerInvoer();
         switch (keuzeHoofdmenu) {
 
@@ -212,6 +269,21 @@ void hoofdmenu () {
                 break;
             case 'R': case 'r':
                 nono.vulRandom();
+                break;
+            case 'T': case 't':
+                nono.toggle();
+                break;
+            case 'A': case 'a':
+                nono.beweegLinks();
+                break;
+            case 'W': case 'w':
+                nono.beweegOmhoog();
+                break;
+            case 'Z': case 'z':
+                nono.beweegOmlaag();
+                break;
+            case 'D': case 'd':
+                nono.beweegRechts();
                 break;
             case 'S': case 's':
                 cout << "Einde van het programma" << endl;
