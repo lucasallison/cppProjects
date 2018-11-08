@@ -21,6 +21,32 @@ char gebruikerInvoer () {
 
 }
 
+int leesGetal(){
+
+    int max = 100;
+    int getal = 0;
+    char invoer;
+
+    cin.get(invoer);
+    while (invoer == '\n') {
+        cin.get(invoer);
+    }
+    while (invoer != '\n') {
+        if (isdigit(invoer)) {
+            getal = getal * 10 + invoer - '0';
+        }
+
+        if (getal > max) {
+            do {
+                getal = getal/10;
+            } while (getal > max);
+        }
+        cin.get(invoer);
+    }
+
+    getal = getal * 10 - 1;
+    return getal;
+}
 
 
 
@@ -34,12 +60,15 @@ class nonogram {
         void drukAf ();
         void maakSchoon ();
         void vulRandom ();
+        void zetPercentage ();
 
     private:
 
         bool nono[MAX][MAX];
         int hoogte;
         int breedte;
+        int percentage;
+
 
 
 };
@@ -47,13 +76,20 @@ class nonogram {
 
 nonogram::nonogram() {
 
-    hoogte = 10;
-    breedte = 10;
+    hoogte = 4;
+    breedte = 4;
+    percentage = 499;
     maakSchoon();
 
 
 
 }
+
+void nonogram::zetPercentage ( ) {
+
+    cout << "Vul een percentage in" << endl;
+    percentage = leesGetal ();
+}//zetpercentage
 
 void nonogram::drukAf() {
     int i;
@@ -63,7 +99,6 @@ void nonogram::drukAf() {
         cout << "+ ";
     }
 
-break;
     for (i = 0; i <= hoogte; i++) {
         cout << "\n";
         cout << "+ ";
@@ -90,7 +125,7 @@ void nonogram::vulRandom() {
     int i, j;
     for (i = 0; i <= hoogte; i++) {
         for (j=0; j <= breedte; j++) {
-            if (randomGetal() < 499) {
+            if (randomGetal() < percentage) {
                 nono[i][j] = true;
 
             } else {
@@ -116,47 +151,20 @@ void nonogram::maakSchoon () {
 }//maakSchoon
 
 
-int leesGetal(){
-
-    int max = 10000;
-    int getal = 0;
-    char invoer;
-    cout << "Vul iets in. " << endl;
-    cin.get(invoer);
-    while (invoer == '\n') {
-        cin.get(invoer);
-    }
-    while (invoer != '\n') {
-        if (isdigit(invoer)) {
-            getal = getal * 10 + invoer - '0';
-        }
-
-        if (getal > max) {
-            do {
-                getal = getal/10;
-            } while (getal > max);
-        }
-        cin.get(invoer);
-    }
-
-    return getal;
-}
-
-
-
 
 void submenu (nonogram & nono) {
 
     char keuzeSubmenu;
 
-    cout << "Welkom in het submenu. Maak een keuze uit: (P)ercentage wijzigen, (G)rootte wijzigen of (T)erug" << endl;
+    cout << "Welkom in het submenu. ";
 
     do {
+       cout << "Maak een keuze uit: (P)ercentage wijzigen, (G)rootte wijzigen of (T)erug" << endl;
        keuzeSubmenu = gebruikerInvoer();
         switch (keuzeSubmenu) {
 
             case 'P': case 'p':
-                cout << "P" << endl;
+                nono.zetPercentage();
                 break;
             case 'G': case 'g':
                 cout << "U heeft B/b geantwoord" << endl;
@@ -198,12 +206,11 @@ void hoofdmenu () {
                 nono.vulRandom();
                 break;
             case 'S': case 's':
-                cout << "Einde programma" << endl;
+                cout << "Einde van het programma" << endl;
                 break;
             default:
                 cout << "Vul een valide letter in:" << endl;
         }//switch
-
     }//while
 }//hoofdmenu
 
