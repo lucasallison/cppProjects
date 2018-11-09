@@ -67,10 +67,13 @@ class nonogram {
         void beweegOmlaag();
         void beweegRechts();
         void toggle ();
+        void maakBeschrijving ();
+        void maakArraySchoon ();
 
     private:
 
         bool nono[MAX][MAX];
+        int beschrijvingVerticaal[MAX][MAX];
         int hoogte;
         int breedte;
         int hoogteCurser;
@@ -86,16 +89,102 @@ class nonogram {
 
 nonogram::nonogram() {
 
-    hoogte = 10;
-    breedte = 10;
-    hoogteCurser = 0;
-    breedteCurser = 0;
+    hoogte = MAX;
+    breedte = MAX;
+    hoogteCurser = hoogte / 2;
+    breedteCurser = breedte / 2;
     percentage = 499;
     plekKolom = 0;
     plekRij = 0;
     maakSchoon();
 
 }
+
+void nonogram::drukAf() {
+    int i;
+    int j;
+
+    for (j = 0; j < breedte + 2; j++) {
+        cout << "+ ";
+    }
+
+
+    
+
+
+    for (i = 0; i < hoogte; i++) {
+        cout << "\n";
+        cout << "+ ";
+        for (j = 0; j < breedte; j++) {
+
+            if (i == hoogteCurser && j == breedteCurser ) {
+
+                cout << "* ";
+
+            } else {
+
+                if (nono[i][j]) {
+                    cout << "X ";
+
+                } else {
+                    cout << "  ";
+                }
+
+            }//ifCurser
+        }//forTwo
+        cout << "+";
+
+        maakBeschrijving();
+
+        for (j = 0; j < breedte; j++) {
+           cout <<  beschrijvingVerticaal[i][j];
+
+        }
+
+    }//forOne
+
+
+
+
+
+
+
+    cout << "\n";
+    for (j = 0; j < breedte + 2; j++) {
+        cout << "+ ";
+    }
+    cout << "\n";
+}//drukAf
+
+void nonogram::maakArraySchoon() {
+
+}//maakArraySchoon
+
+void nonogram::maakBeschrijving () {
+    int i, j;
+    int teller = 0;
+
+
+    for (int i = 0; i < hoogte; i++ ) {
+
+        for (int j = 0; j < breedte; j++) {
+
+            beschrijvingVerticaal[i][j] = 0;
+
+            if (nono[i][j]) { // true
+
+                beschrijvingVerticaal[i][teller]++;
+
+            } else if (beschrijvingVerticaal[i][teller] != 0) {
+
+                teller++;
+            }
+        }
+        teller = 0;
+    }
+}//maakBeschrijving
+
+
 
 void nonogram::zetPercentage ( ) {
 
@@ -125,13 +214,13 @@ void nonogram::beweegOmhoog () {
 }//beweegLinks
 
 void nonogram::beweegOmlaag () {
-    if (hoogteCurser != hoogte) {
+    if (hoogteCurser != hoogte - 1) {
         hoogteCurser = hoogteCurser + 1;
     }
 }//beweegOmlaag
 
 void nonogram::beweegRechts () {
-    if (breedteCurser != breedte) {
+    if (breedteCurser != breedte - 1) {
         breedteCurser = breedteCurser + 1;
     }
 }//beweegRechts
@@ -147,48 +236,12 @@ void nonogram::toggle() {
 
 }//toggle
 
-void nonogram::drukAf() {
-    int i;
-    int j;
 
-    for (j = 0; j < breedte + 2; j++) {
-        cout << "+ ";
-    }
-
-    for (i = 0; i <= hoogte; i++) {
-        cout << "\n";
-        cout << "+ ";
-        for (j = 0; j < breedte; j++) {
-
-            if (i == hoogteCurser && j == breedteCurser ) {
-
-                cout << "* ";
-
-            } else {
-
-                if (nono[i][j]) {
-                    cout << "X ";
-
-                } else {
-                    cout << "  ";
-                }
-
-            }//ifCurser
-        }//forTwo
-        cout << "+";
-    }//forOne
-
-    cout << "\n";
-    for (j = 0; j < breedte + 2; j++) {
-        cout << "+ ";
-    }
-    cout << "\n";
-}//drukAf
 
 void nonogram::vulRandom() {
     int i, j;
-    for (i = 0; i <= hoogte; i++) {
-        for (j=0; j <= breedte; j++) {
+    for (i = 0; i < hoogte; i++) {
+        for (j=0; j < breedte; j++) {
             if (randomGetal() < percentage) {
                 nono[i][j] = true;
 
@@ -249,7 +302,7 @@ void submenu (nonogram & nono) {
 void hoofdmenu () {
 
     nonogram nono;
-    char keuzeHoofdmenu;
+    char keuzeHoofdmenu = '?';
 
 
     cout << "Welkom in het hoofdmenu." << endl;
