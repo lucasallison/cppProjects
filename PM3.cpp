@@ -157,9 +157,14 @@ void nonogram::drukAf() {
             cout << "   ";
         }
 
-        for (j = 0; j < breedte; j++) {
-           cout <<  beschrijvingVerticaal[i][j] << " ";
+        if (beschrijvingVerticaal[i][0] == 0) {
+            cout << "0";
+        } else {
 
+            for (j = 0; beschrijvingVerticaal[i][j] != 0; j++) {
+                cout << beschrijvingVerticaal[i][j] << " ";
+
+            }
         }
 
     }//forOne
