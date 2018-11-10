@@ -67,13 +67,23 @@ class nonogram {
         void beweegOmlaag();
         void beweegRechts();
         void toggle ();
-        void maakBeschrijving ();
+
+        void maakBeschrijvingVerticaal ();
+        void maakArrayVerticaalCheck ();
+
+        void maakBeschrijvingHorizontaal ();
+
         void maakArraySchoon ();
 
     private:
 
+        bool checkVerticaal (int i);
         bool nono[MAX][MAX];
+
         int beschrijvingVerticaal[MAX][MAX];
+        int beschrijvingVerticaalCheck[MAX][MAX];
+
+        int beschrijvingHorizontaal[MAX][MAX];
         int hoogte;
         int breedte;
         int hoogteCurser;
@@ -97,12 +107,15 @@ nonogram::nonogram() {
     plekKolom = 0;
     plekRij = 0;
     maakSchoon();
+    maakArraySchoon();
 
 }
+
 
 void nonogram::drukAf() {
     int i;
     int j;
+
 
     for (j = 0; j < breedte + 2; j++) {
         cout << "+ ";
@@ -134,19 +147,18 @@ void nonogram::drukAf() {
         }//forTwo
         cout << "+";
 
-        maakBeschrijving();
+        if (checkVerticaal(i)) {
+            cout << " V ";
+        } else {
+            cout << "   ";
+        }
 
         for (j = 0; j < breedte; j++) {
-           cout <<  beschrijvingVerticaal[i][j];
+           cout <<  beschrijvingVerticaal[i][j] << " ";
 
         }
 
     }//forOne
-
-
-
-
-
 
 
     cout << "\n";
@@ -154,24 +166,54 @@ void nonogram::drukAf() {
         cout << "+ ";
     }
     cout << "\n";
+
+
+
+    for (i = 0; i < hoogte; i++) {
+        cout << "  ";
+        for (j=0; j < breedte; j++) {
+
+            cout << beschrijvingHorizontaal[i][j] << " ";
+
+
+        }//forTwo
+        cout << "\n";
+    }//forOne
+
+    cout << "\n";
 }//drukAf
 
 void nonogram::maakArraySchoon() {
+    int i, j;
+    for (i = 0; i < hoogte; i++){
+        for (j = 0; j < breedte; j++) {
+            beschrijvingVerticaal[i][j] = 0;
+            beschrijvingHorizontaal[i][j] = 0;
+
+        }
+    }
 
 }//maakArraySchoon
 
-void nonogram::maakBeschrijving () {
+
+
+
+
+
+
+
+
+
+
+
+void nonogram::maakBeschrijvingVerticaal() {
     int i, j;
     int teller = 0;
 
-
     for (int i = 0; i < hoogte; i++ ) {
-
         for (int j = 0; j < breedte; j++) {
-
             beschrijvingVerticaal[i][j] = 0;
-
-            if (nono[i][j]) { // true
+            if (nono[i][j]) {
 
                 beschrijvingVerticaal[i][teller]++;
 
@@ -182,7 +224,80 @@ void nonogram::maakBeschrijving () {
         }
         teller = 0;
     }
-}//maakBeschrijving
+}//maakBeschrijvingVerticaal
+
+void nonogram::maakArrayVerticaalCheck() {
+    int i, j;
+    int teller = 0;
+
+    for (int i = 0; i < hoogte; i++ ) {
+        for (int j = 0; j < breedte; j++) {
+            beschrijvingVerticaalCheck[i][j] = 0;
+            if (nono[i][j]) {
+
+                beschrijvingVerticaalCheck[i][teller]++;
+
+            } else if (beschrijvingVerticaalCheck[i][teller] != 0) {
+
+                teller++;
+            }
+        }
+        teller = 0;
+    }
+}//maakArrayVerticaalCheck
+
+bool nonogram::checkVerticaal (int i) {
+    int j;
+    bool check = true;
+
+    for (j = 0; j< breedte; j++) {
+        if (beschrijvingVerticaal[i][j] !=  beschrijvingVerticaalCheck[i][j]) {
+            check = false;
+        }
+    }
+
+    if (check) {
+        return true;
+    } else {
+        return false;
+    }
+}//checkBeschrijvingVerticaal
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void nonogram::maakBeschrijvingHorizontaal() {
+
+    int i, j;
+    int teller = 0;
+
+    for (int j = 0; j < breedte; j++ ){
+        for (int i = 0; i < hoogte; i++ ){
+            beschrijvingHorizontaal [i][j] = 0;
+            if (nono[i][j]) {
+
+                beschrijvingHorizontaal[teller][j]++;
+
+            } else if (beschrijvingHorizontaal[teller][j] != 0){
+                teller++;
+
+            }
+        }
+        teller = 0;
+    }
+}//maakBeschrijvingHorizontaal
+
+
 
 
 
@@ -303,11 +418,15 @@ void hoofdmenu () {
 
     nonogram nono;
     char keuzeHoofdmenu = '?';
+    nono.maakBeschrijvingVerticaal();
+    nono.maakBeschrijvingHorizontaal();
+    nono.maakArrayVerticaalCheck();
 
 
     cout << "Welkom in het hoofdmenu." << endl;
 
     while (keuzeHoofdmenu != 's' && keuzeHoofdmenu != 'S') {
+
         nono.drukAf();
         cout << "Maak een keuze uit: s(C)hoon, (R)andom, (P)arameters, (T)oggle of (S)toppen" << endl;
         cout << "Om te curser te bewegen: (A)links, (W)omhoog , (Z)omlaag, (D)rechts" << endl;
@@ -316,16 +435,25 @@ void hoofdmenu () {
 
             case 'C': case 'c':
                 nono.maakSchoon();
+                nono.maakArrayVerticaalCheck();
                 break;
             case 'P': case 'p':
                 submenu(nono);
                 break;
+
+
             case 'R': case 'r':
                 nono.vulRandom();
+                nono.maakBeschrijvingVerticaal();
+                nono.maakBeschrijvingHorizontaal();
+                nono.maakArrayVerticaalCheck();
                 break;
             case 'T': case 't':
                 nono.toggle();
+                nono.maakArrayVerticaalCheck();
                 break;
+
+
             case 'A': case 'a':
                 nono.beweegLinks();
                 break;
