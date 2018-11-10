@@ -130,7 +130,7 @@ void nonogram::drukAf() {
         cout << "+ ";
         for (j = 0; j < breedte; j++) {
 
-            if (i == hoogteCurser && j == breedteCurser ) {
+            if (i == hoogteCurser && j == breedteCurser) {
 
                 cout << "* ";
 
@@ -311,8 +311,11 @@ void nonogram::zetAfmetingen(){
 
     cout << "Vul de hoogte in:" << endl;
     hoogte = leesGetal(50);
+    hoogteCurser = hoogte / 2;
     cout << "Vul de breedte in:" << endl;
     breedte = leesGetal(50);
+    breedteCurser = breedte / 2;
+
 }//zetAfmetingen
 
 
