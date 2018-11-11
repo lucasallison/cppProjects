@@ -3,6 +3,10 @@
 
 using namespace std;
 
+//MOET BIJ PERCENTAGE 101?????
+//MAAK SCHOON!!!!
+
+
 
 int randomGetal ( ) {
     static int getal = 42;
@@ -120,7 +124,7 @@ void nonogram::drukAf() {
     int i;
     int j;
 
-
+    cout << "\n";
     for (j = 0; j < breedte + 2; j++) {
         cout << "+ ";
     }
@@ -186,19 +190,39 @@ void nonogram::drukAf() {
 
     }
 
-
     cout << "\n";
+
+    bool nietKlaar = true;
     for (i = 0; i < hoogte; i++) {
         cout << "  ";
-        for (j=0; j < breedte; j++) {
 
-            cout << beschrijvingHorizontaal[i][j] << " ";
+        if (nietKlaar) {
+            nietKlaar = false;
+            for (j = 0; j < breedte; j++) {
+                if (beschrijvingHorizontaal[i][j] !=0) {
+                    nietKlaar = true;
+                }
+            }
+            for (j = 0; j < breedte; j++) {
 
+                if (! nietKlaar && i == 0) {
+                    cout << "0 ";
+                } else {
 
-        }//forTwo
-        cout << "\n";
-    }//forOne
-
+                    if (beschrijvingHorizontaal[i][j] == 0) {
+                        cout << "  ";
+                    } else {
+                        if (beschrijvingHorizontaal[i][j] > 9){
+                            cout << beschrijvingHorizontaal[i][j];
+                        } else {
+                            cout << beschrijvingHorizontaal[i][j] << " ";
+                        }
+                    }
+                }
+            }
+            cout << "\n";
+        }
+    }
     cout << "\n";
 }//drukAf
 
@@ -379,13 +403,13 @@ bool nonogram::checkHorizontaal(int j) {
 void nonogram::zetPercentage ( ) {
 
     cout << "Vul een percentage in" << endl;
-    percentage = leesGetal (100) * 10;
+    percentage = leesGetal (101) * 10;
 }//zetpercentage
 
 void nonogram::zetAfmetingen(){
 
     cout << "Vul de hoogte in:" << endl;
-    hoogte = leesGetal(50);
+    hoogte = leesGetal(51);
     hoogteCurser = hoogte / 2;
     cout << "Vul de breedte in:" << endl;
     breedte = leesGetal(50);
@@ -425,8 +449,6 @@ void nonogram::toggle() {
     } else {
         nono[hoogteCurser][breedteCurser] = true;
     }
-
-
 }//toggle
 
 
@@ -475,19 +497,26 @@ void submenu (nonogram & nono) {
 
             case 'P': case 'p':
                 nono.zetPercentage();
+                nono.maakSchoon();
+                nono.maakArrayVerticaalCheck();
+                nono.maakArrayHorizontaalCheck();
+                nono.maakArraySchoon();
                 break;
             case 'G': case 'g':
                 nono.zetAfmetingen();
+                nono.maakSchoon();
+                nono.maakArrayVerticaalCheck();
+                nono.maakArrayHorizontaalCheck();
+                nono.maakArraySchoon();
                 break;
             case 'T':  case 't':
                 cout << "Welkom in het hoofdmenu. " << endl;
                 break;
             default:
-                cout << "Vul een valide letter in:" << endl;
+                cout << "Vul een valide letter in." << endl;
         }//switch
 
     } while (keuzeSubmenu != 'T' && keuzeSubmenu != 't' );
-
 
 }//submenu
 
@@ -507,7 +536,7 @@ void hoofdmenu () {
     while (keuzeHoofdmenu != 's' && keuzeHoofdmenu != 'S') {
 
         nono.drukAf();
-        cout << "Maak een keuze uit: s(C)hoon, (R)andom, (P)arameters, (T)oggle of (S)toppen" << endl;
+        cout << "Maak een keuze uit: s(C)hoon (nonogram), (R)andom, (P)arameters, (T)oggle of (S)toppen" << endl;
         cout << "Om te curser te bewegen: (A)links, (W)omhoog , (Z)omlaag, (D)rechts" << endl;
         keuzeHoofdmenu = gebruikerInvoer();
         switch (keuzeHoofdmenu) {
@@ -552,7 +581,7 @@ void hoofdmenu () {
                 cout << "Einde van het programma" << endl;
                 break;
             default:
-                cout << "Vul een valide letter in!" << endl;
+                cout << "Vul een valide letter in." << endl;
         }//switch
     }//while
 }//hoofdmenu
