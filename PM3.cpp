@@ -71,6 +71,7 @@ class nonogram {
         void beweegOmlaag();
         void beweegRechts();
         void toggle ();
+        void cursorCase ();
 
         void maakBeschrijvingVerticaal ();
         void maakArrayVerticaalCheck ();
@@ -79,12 +80,14 @@ class nonogram {
         void maakArrayHorizontaalCheck ();
 
         void maakArraySchoon ();
+        void veranderBool (int i, int j);
 
     private:
 
         bool checkVerticaal (int i);
         bool checkHorizontaal (int j);
         bool nono[MAX][MAX];
+        bool cursorVerander;
 
         int beschrijvingVerticaal[MAX][MAX];
         int beschrijvingVerticaalCheck[MAX][MAX];
@@ -114,9 +117,9 @@ nonogram::nonogram() {
     percentage = 499;
     plekKolom = 0;
     plekRij = 0;
+    cursorVerander = false;
     maakSchoon();
     maakArraySchoon();
-
 }
 
 
@@ -139,8 +142,11 @@ void nonogram::drukAf() {
         for (j = 0; j < breedte; j++) {
 
             if (i == hoogteCurser && j == breedteCurser) {
-
+                if (cursorVerander) {
+                    veranderBool(i,j);
+                }
                 cout << "* ";
+
 
             } else {
 
@@ -227,6 +233,37 @@ void nonogram::drukAf() {
 }//drukAf
 
 
+void nonogram::cursorCase() {
+    char modus;
+    cout << "selecteer welke modus u wilt voor uw cursor:" << endl;
+    cout << "(A)lle punten waarop de cursor staat worden veranderd" << endl;
+    cout << "(G)een van de punten waarop de cursor staat worden veranderd." << endl;
+    cin >> modus;
+
+    switch (modus) {
+        case 'A': case 'a':
+            cursorVerander = true;
+            break;
+        case 'G': case 'g':
+            cursorVerander = false;
+            break;
+        default:
+            cout << "vul een valide cijfer in.";
+    }
+
+
+
+}//cursorCase
+
+void nonogram::veranderBool(int i, int j) {
+   if(nono[i][j]) {
+       nono[i][j] = false;
+   } else {
+       nono[i][j] = true;
+   }
+}//veranderBool
+
+
 
 
 
@@ -260,7 +297,7 @@ void nonogram::maakBeschrijvingVerticaal() {
     for (int i = 0; i < hoogte; i++ ) {
         for (int j = 0; j < breedte; j++) {
             beschrijvingVerticaal[i][j] = 0;
-            if (nono[i][j]) {
+            if (nono[i][j]) {cursorVerander = false;
 
                 beschrijvingVerticaal[i][teller]++;
 
@@ -475,23 +512,22 @@ void nonogram::maakSchoon () {
 
     int i, j;
 
-    for(i=0; i <= hoogte; i ++) {
-        for (j=0;j <= breedte; j++) {
+    for(i=0; i < hoogte; i ++) {
+        for (j=0;j < breedte; j++) {
             nono[i][j] = false;
-        }//forTwo
-    }//forOne
+        }
+    }
 }//maakSchoon
-
 
 
 void submenu (nonogram & nono) {
 
     char keuzeSubmenu;
 
-    cout << "Welkom in het submenu. ";
+    cout << "\n" << "Welkom in het submenu." << endl;
 
     do {
-       cout << "Maak een keuze uit: (P)ercentage wijzigen, (G)rootte wijzigen of (T)erug" << endl;
+       cout << "Maak een keuze uit: (P)ercentage wijzigen, (G)rootte wijzigen, (C)ursor modus aanpassen of (T)erug" << endl;
        keuzeSubmenu = gebruikerInvoer();
         switch (keuzeSubmenu) {
 
@@ -509,8 +545,11 @@ void submenu (nonogram & nono) {
                 nono.maakArrayHorizontaalCheck();
                 nono.maakArraySchoon();
                 break;
+            case 'C': case 'c':
+                nono.cursorCase();
+                break;
             case 'T':  case 't':
-                cout << "Welkom in het hoofdmenu. " << endl;
+                cout << "\n" << "Welkom in het hoofdmenu." << endl;
                 break;
             default:
                 cout << "Vul een valide letter in." << endl;
@@ -536,7 +575,7 @@ void hoofdmenu () {
     while (keuzeHoofdmenu != 's' && keuzeHoofdmenu != 'S') {
 
         nono.drukAf();
-        cout << "Maak een keuze uit: s(C)hoon (nonogram), (R)andom, (P)arameters, (T)oggle of (S)toppen" << endl;
+        cout << "Maak een keuze uit: s(C)hoon, (R)andom, (P)arameters, (T)oggle of (S)toppen" << endl;
         cout << "Om te curser te bewegen: (A)links, (W)omhoog , (Z)omlaag, (D)rechts" << endl;
         keuzeHoofdmenu = gebruikerInvoer();
         switch (keuzeHoofdmenu) {
@@ -567,15 +606,23 @@ void hoofdmenu () {
 
             case 'A': case 'a':
                 nono.beweegLinks();
+                nono.maakArrayVerticaalCheck();
+                nono.maakArrayHorizontaalCheck();
                 break;
             case 'W': case 'w':
                 nono.beweegOmhoog();
+                nono.maakArrayVerticaalCheck();
+                nono.maakArrayHorizontaalCheck();
                 break;
             case 'Z': case 'z':
                 nono.beweegOmlaag();
+                nono.maakArrayVerticaalCheck();
+                nono.maakArrayHorizontaalCheck();
                 break;
             case 'D': case 'd':
                 nono.beweegRechts();
+                nono.maakArrayVerticaalCheck();
+                nono.maakArrayHorizontaalCheck();
                 break;
             case 'S': case 's':
                 cout << "Einde van het programma" << endl;
