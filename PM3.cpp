@@ -1,3 +1,18 @@
+//Programeurs: Lucas Allison en Thom Stokx.
+//Naam bestand: AllisonStokx.cpp
+/*Het programma opent een lege nonogram van 50 bij 50 en een menu,
+ * waar vervolgens meerder keuze's gemaakt kunnen worden door de gebruiker.
+ * De gebruiker kan de nonogram random laten vullen, hem helemaal leeg maken,
+ * een specifiek vakje aanpassen, een beschrijving maken van de huidige nonogram,
+ * deze beschrijving uitschrijven naar een file, een beschrijving invoeren,
+ * een submenu openen en het programma stoppen.
+ * In het submenu kan de gebruiker het percentage gevulde hokjes van 50% aanpassen naar een andere hoeveelheid,
+ * de grote van de nonogram aanpassen (zolang het maar kleiner dan 50 bij 50 is),
+ * het effect van de cursor aanpassen en terug gaan naar het hoofdmenu.
+*/
+//Gebruikte programma (editor and compiler): CLion en g++
+//Laatste bewerkingen van het programma gemaakt op: 12-10-2018
+
 #include<iostream>
 #include<string>
 #include<fstream>
@@ -602,7 +617,21 @@ void hoofdmenu() {
 
 int main() {
 
-    hoofdmenu();
+    cout << "Programeurs: Lucas Allison en Thom Stokx.\n"
+         << "Naam bestand: AllisonStokx.cpp\n"
+         << "Het programma opent een lege nonogram van 50 bij 50 en een menu, "
+         << "waar vervolgens meerder keuze's gemaakt kunnen worden door de gebruiker. "
+         << "De gebruiker kan de nonogram random laten vullen, hem helemaal leeg maken,"
+         << "een specifiek vakje aanpassen, een beschrijving maken van de huidige nonogram, "
+         << "deze beschrijving uitschrijven naar een file, een beschrijving invoeren, "
+         << "een submenu openen en het programma stoppen. "
+         << "In het submenu kan de gebruiker het percentage gevulde hokjes van 50% aanpassen naar een andere hoeveelheid, "
+         << "de grote van de nonogram aanpassen (zolang het maar kleiner dan 50 bij 50 is), "
+         << "het effect van de cursor aanpassen en terug gaan naar het hoofdmenu.\n"
+         << "ebruikte programma (editor and compiler): CLion en g++.\n"
+         << "Laatste bewerkingen van het programma gemaakt op: 12-10-2018. \n";
+
+         hoofdmenu();
 
     return 0;
 }
