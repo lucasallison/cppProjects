@@ -1,10 +1,10 @@
 #include<iostream>
 #include<string>
+#include<fstream>
 
 using namespace std;
 
-//MOET BIJ PERCENTAGE 101?????
-//MAAK SCHOON!!!!
+
 
 
 
@@ -73,14 +73,15 @@ class nonogram {
         void toggle ();
         void cursorCase ();
 
-        void maakBeschrijvingVerticaal ();
-        void maakArrayVerticaalCheck ();
+        void maakBeschrijving ();
+        void maakBeschrijvingCheck ();
 
-        void maakBeschrijvingHorizontaal ();
-        void maakArrayHorizontaalCheck ();
+
 
         void maakArraySchoon ();
         void veranderBool (int i, int j);
+
+        void eigenBeschrijvingInvoeren ();
 
     private:
 
@@ -102,8 +103,6 @@ class nonogram {
         int percentage;
         int plekKolom;
         int plekRij;
-
-
 
 };
 
@@ -232,6 +231,39 @@ void nonogram::drukAf() {
     cout << "\n";
 }//drukAf
 
+void nonogram::eigenBeschrijvingInvoeren() {
+        string invoerfile;
+        cout << "Hoe heet het bestand waaruit u de beschrijving over wilt nemen? ";
+        cin >> invoerfile;
+        ifstream invoer;
+        invoer.open(invoerfile.c_str());
+        if (!invoer){
+            cout << "Deze file kan niet gevonden worden." << endl;
+            return;
+        }
+
+        invoer >> hoogte >> breedte;
+        for (int i = 0; i < hoogte; i++){
+            int j = 0;
+            invoer >> beschrijvingHorizontaal[i][j];
+            while (beschrijvingHorizontaal[i][j] != 0){
+                j++;
+                invoer >> beschrijvingHorizontaal[i][j];
+            }
+        }
+        for (int j = 0; j < breedte; j++){
+            int i = 0;
+            invoer >> beschrijvingVerticaal[i][j];
+            while (beschrijvingVerticaal[i][j] != 0){
+                i++;
+                invoer >> beschrijvingVerticaal[i][j];
+            }
+        }
+        invoer.close();
+        hoogteCurser = hoogte / 2;
+        breedteCurser = breedte / 2;
+}//eigenBeschrijvingInvoeren
+
 
 void nonogram::cursorCase() {
     char modus;
@@ -269,8 +301,8 @@ void nonogram::veranderBool(int i, int j) {
 
 void nonogram::maakArraySchoon() {
     int i, j;
-    for (i = 0; i < hoogte; i++){
-        for (j = 0; j < breedte; j++) {
+    for (i = 0; i < MAX; i++){
+        for (j = 0; j < MAX; j++) {
             beschrijvingVerticaal[i][j] = 0;
             beschrijvingHorizontaal[i][j] = 0;
 
@@ -281,16 +313,7 @@ void nonogram::maakArraySchoon() {
 
 
 
-
-
-
-
-
-
-
-
-
-void nonogram::maakBeschrijvingVerticaal() {
+void nonogram::maakBeschrijving() {
     int i, j;
     int teller = 0;
 
@@ -308,27 +331,25 @@ void nonogram::maakBeschrijvingVerticaal() {
         }
         teller = 0;
     }
-}//maakBeschrijvingVerticaal
+    
 
-void nonogram::maakArrayVerticaalCheck() {
-    int i, j;
-    int teller = 0;
-
-    for (int i = 0; i < hoogte; i++ ) {
-        for (int j = 0; j < breedte; j++) {
-            beschrijvingVerticaalCheck[i][j] = 0;
+    for (int j = 0; j < breedte; j++ ){
+        for (int i = 0; i < hoogte; i++ ){
+            beschrijvingHorizontaal[i][j] = 0;
             if (nono[i][j]) {
 
-                beschrijvingVerticaalCheck[i][teller]++;
+                beschrijvingHorizontaal[teller][j]++;
 
-            } else if (beschrijvingVerticaalCheck[i][teller] != 0) {
-
+            } else if (beschrijvingHorizontaal[teller][j] != 0){
                 teller++;
+
             }
         }
         teller = 0;
     }
-}//maakArrayVerticaalCheck
+}//maakBeschrijving
+
+
 
 bool nonogram::checkVerticaal (int i) {
     int j;
@@ -351,38 +372,7 @@ bool nonogram::checkVerticaal (int i) {
 
 
 
-
-
-
-
-
-
-
-
-
-void nonogram::maakBeschrijvingHorizontaal() {
-
-    int i, j;
-    int teller = 0;
-
-    for (int j = 0; j < breedte; j++ ){
-        for (int i = 0; i < hoogte; i++ ){
-            beschrijvingHorizontaal[i][j] = 0;
-            if (nono[i][j]) {
-
-                beschrijvingHorizontaal[teller][j]++;
-
-            } else if (beschrijvingHorizontaal[teller][j] != 0){
-                teller++;
-
-            }
-        }
-        teller = 0;
-    }
-}//maakBeschrijvingHorizontaal
-
-
-void nonogram::maakArrayHorizontaalCheck() {
+void nonogram::maakBeschrijvingCheck() {
 
     int i, j;
     int teller = 0;
@@ -402,7 +392,22 @@ void nonogram::maakArrayHorizontaalCheck() {
         teller = 0;
     }
 
-}//maakArratHorizontaalCheck
+    for (int i = 0; i < hoogte; i++ ) {
+        for (int j = 0; j < breedte; j++) {
+            beschrijvingVerticaalCheck[i][j] = 0;
+            if (nono[i][j]) {
+
+                beschrijvingVerticaalCheck[i][teller]++;
+
+            } else if (beschrijvingVerticaalCheck[i][teller] != 0) {
+
+                teller++;
+            }
+        }
+        teller = 0;
+    }
+
+}//maakBeschrijvingCheck
 
 
 bool nonogram::checkHorizontaal(int j) {
@@ -512,8 +517,8 @@ void nonogram::maakSchoon () {
 
     int i, j;
 
-    for(i=0; i < hoogte; i ++) {
-        for (j=0;j < breedte; j++) {
+    for(i=0; i < MAX; i ++) {
+        for (j=0;j < MAX; j++) {
             nono[i][j] = false;
         }
     }
@@ -534,15 +539,13 @@ void submenu (nonogram & nono) {
             case 'P': case 'p':
                 nono.zetPercentage();
                 nono.maakSchoon();
-                nono.maakArrayVerticaalCheck();
-                nono.maakArrayHorizontaalCheck();
+                nono.maakBeschrijvingCheck();
                 nono.maakArraySchoon();
                 break;
             case 'G': case 'g':
                 nono.zetAfmetingen();
                 nono.maakSchoon();
-                nono.maakArrayVerticaalCheck();
-                nono.maakArrayHorizontaalCheck();
+                nono.maakBeschrijvingCheck();
                 nono.maakArraySchoon();
                 break;
             case 'C': case 'c':
@@ -564,10 +567,8 @@ void hoofdmenu () {
 
     nonogram nono;
     char keuzeHoofdmenu = '?';
-    nono.maakBeschrijvingVerticaal();
-    nono.maakBeschrijvingHorizontaal();
-    nono.maakArrayVerticaalCheck();
-    nono.maakArrayHorizontaalCheck();
+    nono.maakBeschrijvingCheck();
+    nono.maakBeschrijving();
 
 
     cout << "Welkom in het hoofdmenu." << endl;
@@ -575,15 +576,14 @@ void hoofdmenu () {
     while (keuzeHoofdmenu != 's' && keuzeHoofdmenu != 'S') {
 
         nono.drukAf();
-        cout << "Maak een keuze uit: s(C)hoon, (R)andom, (P)arameters, (T)oggle of (S)toppen" << endl;
+        cout << "Maak een keuze uit: s(C)hoon, (R)andom, (P)submenu, (T)oggle, (M)aak beschrijvingen, (E)igenbeschrijving invoeren of (S)toppen" << endl;
         cout << "Om te curser te bewegen: (A)links, (W)omhoog , (Z)omlaag, (D)rechts" << endl;
         keuzeHoofdmenu = gebruikerInvoer();
         switch (keuzeHoofdmenu) {
 
             case 'C': case 'c':
                 nono.maakSchoon();
-                nono.maakArrayVerticaalCheck();
-                nono.maakArrayHorizontaalCheck();
+                nono.maakBeschrijvingCheck();
                 break;
             case 'P': case 'p':
                 submenu(nono);
@@ -592,37 +592,36 @@ void hoofdmenu () {
 
             case 'R': case 'r':
                 nono.vulRandom();
-                nono.maakBeschrijvingVerticaal();
-                nono.maakBeschrijvingHorizontaal();
-                nono.maakArrayVerticaalCheck();
-                nono.maakArrayHorizontaalCheck();
+                nono.maakBeschrijvingCheck();
                 break;
             case 'T': case 't':
                 nono.toggle();
-                nono.maakArrayVerticaalCheck();
-                nono.maakArrayHorizontaalCheck();
+                nono.maakBeschrijvingCheck();
                 break;
 
+            case 'M': case 'm':
+                nono.maakBeschrijving();
+                break;
+            case 'E': case 'e':
+                nono.maakArraySchoon();
+                nono.eigenBeschrijvingInvoeren();
+                break;
 
             case 'A': case 'a':
                 nono.beweegLinks();
-                nono.maakArrayVerticaalCheck();
-                nono.maakArrayHorizontaalCheck();
+                nono.maakBeschrijvingCheck();
                 break;
             case 'W': case 'w':
                 nono.beweegOmhoog();
-                nono.maakArrayVerticaalCheck();
-                nono.maakArrayHorizontaalCheck();
+                nono.maakBeschrijvingCheck();
                 break;
             case 'Z': case 'z':
                 nono.beweegOmlaag();
-                nono.maakArrayVerticaalCheck();
-                nono.maakArrayHorizontaalCheck();
+                nono.maakBeschrijvingCheck();
                 break;
             case 'D': case 'd':
                 nono.beweegRechts();
-                nono.maakArrayVerticaalCheck();
-                nono.maakArrayHorizontaalCheck();
+                nono.maakBeschrijvingCheck();
                 break;
             case 'S': case 's':
                 cout << "Einde van het programma" << endl;
@@ -638,7 +637,6 @@ void hoofdmenu () {
 
 
 int main () {
-
 
     hoofdmenu();
 
