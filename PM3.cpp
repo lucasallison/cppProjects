@@ -4,25 +4,24 @@
 
 using namespace std;
 
-
+//functie genereert een random getal tussen 0 en 100o
 int randomGetal ( ) {
     static int getal = 42;
     getal = ( 221 * getal + 1 ) % 1000;
     return getal;
 }//randomgetal
 
-
+//door deze fucntie kunnen gebruikers iets invoeren
 char gebruikerInvoer () {
-
     char invoer;
     cin.get(invoer);
     while (invoer == '\n') {
         cin.get(invoer);
     }
-
     return invoer;
 }//gebruikerInvoer
 
+//deze functie haalt een getal uit de invoer van gebruiker
 int leesGetal(int max){
 
 
@@ -49,11 +48,9 @@ int leesGetal(int max){
     return getal;
 }//leesGetal
 
+const int MAX = 50;//de maximale grootte van het nonogram
 
-
-const int MAX = 15;
-
-
+//class voor alle functies met betrekking tot het nonogram
 class nonogram {
 
     public:
@@ -94,9 +91,7 @@ class nonogram {
         int percentage;
         int plekKolom;
         int plekRij;
-
 };
-
 
 nonogram::nonogram() {
 
@@ -104,7 +99,7 @@ nonogram::nonogram() {
     breedte = MAX;
     hoogteCurser = hoogte / 2;
     breedteCurser = breedte / 2;
-    percentage = 499;
+    percentage = 499; //zet standaard percentage op 50%
     plekKolom = 0;
     plekRij = 0;
     cursorMode = 2;
@@ -112,19 +107,14 @@ nonogram::nonogram() {
     maakBeschrijvingSchoon();
 }
 
-
+//deze functie drukt het nonogram af
 void nonogram::drukAf() {
-    int i;
-    int j;
+    int i, j;
 
     cout << "\n";
     for (j = 0; j < breedte + 2; j++) {
         cout << "+ ";
     }
-
-
-    
-
 
     for (i = 0; i < hoogte; i++) {
         cout << "\n";
@@ -152,7 +142,6 @@ void nonogram::drukAf() {
             }
         }
         cout << "+";
-
         if (checkVerticaal(i)) {
             cout << " V ";
         } else {
@@ -162,16 +151,11 @@ void nonogram::drukAf() {
             for (j = 0; beschrijvingVerticaal[i][j] != 0; j++) {
                 cout << beschrijvingVerticaal[i][j] << " ";
             }
-
-
     }
-
-
     cout << "\n";
     for (j = 0; j < breedte + 2; j++) {
         cout << "+ ";
     }
-
     cout << "\n" << "  ";
     for (j = 0; j < breedte; j++) {
 
@@ -180,17 +164,16 @@ void nonogram::drukAf() {
         } else {
             cout << "  ";
         }
-
     }
-
     cout << "\n";
-
     bool nietKlaar = true;
     for (i = 0; i < hoogte; i++) {
         cout << "  ";
 
         if (nietKlaar) {
             nietKlaar = false;
+            //deze loop checkt voor een regel met alleen maar nullen
+            //Hierdoor komen er geen overbodige ruimte onder het nonogram
             for (j = 0; j < breedte; j++) {
                 if (beschrijvingHorizontaal[i][j] !=0) {
                     nietKlaar = true;
@@ -202,6 +185,7 @@ void nonogram::drukAf() {
                         cout << "  ";
                     } else {
                         if (beschrijvingHorizontaal[i][j] > 9){
+                            //maakt van een int een char bij getallen groter dan 9
                             cout << (char(beschrijvingHorizontaal[i][j] - 10 + 'A')) << " ";
                         } else {
                             cout << beschrijvingHorizontaal[i][j] << " ";
@@ -214,6 +198,7 @@ void nonogram::drukAf() {
     cout << "\n";
 }//drukAf
 
+//deze functie kan de beschrijving uitvoeren naar een file
 void nonogram::beschrijvingUitvoeren() {
     int i, j;
     string uitvoerFile;
@@ -226,8 +211,8 @@ void nonogram::beschrijvingUitvoeren() {
     for (i = 0; i < hoogte; i++){
         j = 0;
         while (beschrijvingVerticaal[i][j] != 0) {
+            uitvoer << beschrijvingVerticaal[i][j] << " ";
             j++;
-            uitvoer << beschrijvingVerticaal[i][j];
         }
         uitvoer << "\n";
     }
@@ -235,14 +220,15 @@ void nonogram::beschrijvingUitvoeren() {
     for (j = 0; j < hoogte; j++){
         i = 0;
         while (beschrijvingHorizontaal[i][j] != 0) {
+            uitvoer << beschrijvingHorizontaal[i][j] << " ";
             i++;
-            uitvoer << beschrijvingHorizontaal[i][j];
         }
         uitvoer << "\n";
     }
     uitvoer.close();
 }//beschrijvingUitvoeren
 
+//de gebruiker kan een eigen beschrijving invoeren van een file
 void nonogram::eigenBeschrijvingInvoeren() {
         int i, j;
         string invoerfile;
@@ -266,7 +252,6 @@ void nonogram::eigenBeschrijvingInvoeren() {
             }
         }
 
-
         for (int j = 0; j < breedte; j++){
             i = 0;
             invoer >> beschrijvingHorizontaal[i][j];
@@ -280,6 +265,7 @@ void nonogram::eigenBeschrijvingInvoeren() {
         breedteCurser = breedte / 2;
 }//eigenBeschrijvingInvoeren
 
+//kan de modus van de cursor veranderen
 void nonogram::cursorCase() {
     int modus;
     cout << "selecteer welke modus u wilt voor uw cursor:" << endl;
@@ -303,33 +289,32 @@ void nonogram::cursorCase() {
     }
 }//cursorCase
 
+//gebruikt bij cursor modus, maakt false true
 void nonogram::maakTrue (int i, int j) {
    if(! nono[i][j]) {
        nono[i][j]  = true;
    }
 }//maakTrue
 
+//gebruikt bij cursor modus, maakt true false
 void nonogram::maakFalse (int i, int j) {
     if(nono[i][j]) {
         nono[i][j] = false;
     }
 }//maakFalse
 
-
+//functie die de beschrijvings array's op 0 zet
 void nonogram::maakBeschrijvingSchoon() {
     int i, j;
     for (i = 0; i < MAX; i++){
         for (j = 0; j < MAX; j++) {
             beschrijvingVerticaal[i][j] = 0;
             beschrijvingHorizontaal[i][j] = 0;
-
         }
     }
-
 }//maakArraySchoon
 
-
-
+//functie die de beschrijving maakt
 void nonogram::maakBeschrijving() {
     int i, j;
     int teller = 0;
@@ -342,13 +327,11 @@ void nonogram::maakBeschrijving() {
                 beschrijvingVerticaal[i][teller]++;
 
             } else if (beschrijvingVerticaal[i][teller] != 0) {
-
                 teller++;
             }
         }
         teller = 0;
     }
-    
 
     for (int j = 0; j < breedte; j++ ){
         for (int i = 0; i < hoogte; i++ ){
@@ -366,31 +349,8 @@ void nonogram::maakBeschrijving() {
     }
 }//maakBeschrijving
 
-
-
-bool nonogram::checkVerticaal (int i) {
-    int j;
-    bool check = true;
-
-    for (j = 0; j< breedte; j++) {
-        if (beschrijvingVerticaal[i][j] !=  beschrijvingVerticaalCheck[i][j]) {
-            check = false;
-        }
-    }
-
-    if (check) {
-        return true;
-    } else {
-        return false;
-    }
-}//checkBeschrijvingVerticaal
-
-
-
-
-
+//maakt een kopie van het nonogram om te kunnen kijken of deze goed wordt ingevuld
 void nonogram::maakBeschrijvingCheck() {
-
     int i, j;
     int teller = 0;
 
@@ -423,12 +383,28 @@ void nonogram::maakBeschrijvingCheck() {
         }
         teller = 0;
     }
-
 }//maakBeschrijvingCheck
 
+//kijkt per rij of deze klopt in het nonogram
+bool nonogram::checkVerticaal (int i) {
+    int j;
+    bool check = true;
 
+    for (j = 0; j< breedte; j++) {
+        if (beschrijvingVerticaal[i][j] !=  beschrijvingVerticaalCheck[i][j]) {
+            check = false;
+        }
+    }
+
+    if (check) {
+        return true;
+    } else {
+        return false;
+    }
+}//checkBeschrijvingVerticaal
+
+//kijkt per kolom of deze klopt in het nonogram
 bool nonogram::checkHorizontaal(int j) {
-
     int i;
     bool check = true;
 
@@ -443,39 +419,25 @@ bool nonogram::checkHorizontaal(int j) {
     } else {
         return false;
     }
-
 }//checkHorizontaal
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+//hiermee kan het percentage worden gewijzigd
 void nonogram::zetPercentage ( ) {
     cout << "Vul een percentage in" << endl;
     percentage = leesGetal (101) * 10;
 }//zetpercentage
 
+//hiermee kunnen de afmetingen van het nonogram gewijzigd worden
 void nonogram::zetAfmetingen(){
-
     cout << "Vul de hoogte in:" << endl;
     hoogte = leesGetal(51);
     hoogteCurser = hoogte / 2;
     cout << "Vul de breedte in:" << endl;
     breedte = leesGetal(50);
     breedteCurser = breedte / 2;
-
 }//zetAfmetingen
 
-
+//de volgende fucnties zijn voor de cursor bewegingen
 void nonogram::beweegLinks () {
     if (breedteCurser != 0) {
         breedteCurser = breedteCurser - 1;
@@ -500,8 +462,8 @@ void nonogram::beweegRechts () {
     }
 }//beweegRechts
 
+//voor toggelen: veranderd false in true en visa versa
 void nonogram::toggle() {
-
     if (nono[hoogteCurser][breedteCurser]) {
         nono[hoogteCurser][breedteCurser] = false;
     } else {
@@ -509,28 +471,23 @@ void nonogram::toggle() {
     }
 }//toggle
 
-
-
+//vult het nonogram random
 void nonogram::vulRandom() {
     int i, j;
     for (i = 0; i < hoogte; i++) {
         for (j=0; j < breedte; j++) {
             if (randomGetal() < percentage) {
                 nono[i][j] = true;
-
             } else {
                 nono[i][j] = false;
 
             }
-
         }
     }
 }//vulRandom
 
-
-
+//zet alle elementen in het array nono op false
 void nonogram::maakSchoon () {
-
     int i, j;
 
     for(i=0; i < MAX; i ++) {
@@ -540,18 +497,15 @@ void nonogram::maakSchoon () {
     }
 }//maakSchoon
 
-
+//functie voor het submenu
 void submenu (nonogram & nono) {
-
     char keuzeSubmenu;
 
     cout << "\n" << "Welkom in het submenu." << endl;
-
     do {
        cout << "Maak een keuze uit: (P)ercentage wijzigen, (G)rootte wijzigen, (C)ursor modus aanpassen of (T)erug" << endl;
        keuzeSubmenu = gebruikerInvoer();
         switch (keuzeSubmenu) {
-
             case 'P': case 'p':
                 nono.zetPercentage();
                 nono.maakSchoon();
@@ -573,30 +527,22 @@ void submenu (nonogram & nono) {
             default:
                 cout << "Vul een valide letter in." << endl;
         }//switch
-
     } while (keuzeSubmenu != 'T' && keuzeSubmenu != 't' );
-
 }//submenu
 
-
+//functie voor het hoofdmenu
 void hoofdmenu () {
-
     nonogram nono;
     char keuzeHoofdmenu = '?';
     nono.maakBeschrijvingCheck();
     nono.maakBeschrijving();
-
-
     cout << "Welkom in het hoofdmenu." << endl;
-
     while (keuzeHoofdmenu != 's' && keuzeHoofdmenu != 'S') {
-
         nono.drukAf();
         cout << "Maak een keuze uit: s(C)hoon, (R)andom, (P)submenu, (T)oggle, (M)aak beschrijvingen, (E)igenbeschrijving invoeren, (U)itvoeren van de beschrijvingen of (S)toppen" << endl;
         cout << "Om te curser te bewegen: (A)links, (W)omhoog , (Z)omlaag, (D)rechts" << endl;
         keuzeHoofdmenu = gebruikerInvoer();
         switch (keuzeHoofdmenu) {
-
             case 'C': case 'c':
                 nono.maakSchoon();
                 nono.maakBeschrijvingCheck();
@@ -604,8 +550,6 @@ void hoofdmenu () {
             case 'P': case 'p':
                 submenu(nono);
                 break;
-
-
             case 'R': case 'r':
                 nono.vulRandom();
                 nono.maakBeschrijvingCheck();
@@ -614,7 +558,6 @@ void hoofdmenu () {
                 nono.toggle();
                 nono.maakBeschrijvingCheck();
                 break;
-
             case 'M': case 'm':
                 nono.maakBeschrijving();
                 break;
@@ -649,14 +592,9 @@ void hoofdmenu () {
     }//while
 }//hoofdmenu
 
-
-
-
-
 int main () {
 
     hoofdmenu();
-
-
+    
     return 0;
 }
