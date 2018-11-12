@@ -72,15 +72,10 @@ class nonogram {
         void beweegRechts();
         void toggle ();
         void cursorCase ();
-
         void maakBeschrijving ();
         void maakBeschrijvingCheck ();
-
-
-
-        void maakArraySchoon ();
+        void maakBeschrijvingSchoon ();
         void veranderBool (int i, int j);
-
         void eigenBeschrijvingInvoeren ();
 
     private:
@@ -89,13 +84,10 @@ class nonogram {
         bool checkHorizontaal (int j);
         bool nono[MAX][MAX];
         bool cursorVerander;
-
         int beschrijvingVerticaal[MAX][MAX];
         int beschrijvingVerticaalCheck[MAX][MAX];
-
         int beschrijvingHorizontaal[MAX][MAX];
         int beschrijvingHorizontaalCheck[MAX][MAX];
-
         int hoogte;
         int breedte;
         int hoogteCurser;
@@ -118,7 +110,7 @@ nonogram::nonogram() {
     plekRij = 0;
     cursorVerander = false;
     maakSchoon();
-    maakArraySchoon();
+    maakBeschrijvingSchoon();
 }
 
 
@@ -146,7 +138,6 @@ void nonogram::drukAf() {
                 }
                 cout << "* ";
 
-
             } else {
 
                 if (nono[i][j]) {
@@ -156,8 +147,8 @@ void nonogram::drukAf() {
                     cout << "  ";
                 }
 
-            }//ifCurser
-        }//forTwo
+            }
+        }
         cout << "+";
 
         if (checkVerticaal(i)) {
@@ -166,17 +157,12 @@ void nonogram::drukAf() {
             cout << "   ";
         }
 
-        if (beschrijvingVerticaal[i][0] == 0) {
-            cout << "0";
-        } else {
-
             for (j = 0; beschrijvingVerticaal[i][j] != 0; j++) {
                 cout << beschrijvingVerticaal[i][j] << " ";
-
             }
-        }
 
-    }//forOne
+
+    }
 
 
     cout << "\n";
@@ -210,10 +196,6 @@ void nonogram::drukAf() {
             }
             for (j = 0; j < breedte; j++) {
 
-                if (! nietKlaar && i == 0) {
-                    cout << "0 ";
-                } else {
-
                     if (beschrijvingHorizontaal[i][j] == 0) {
                         cout << "  ";
                     } else {
@@ -224,7 +206,6 @@ void nonogram::drukAf() {
                         }
                     }
                 }
-            }
             cout << "\n";
         }
     }
@@ -232,6 +213,7 @@ void nonogram::drukAf() {
 }//drukAf
 
 void nonogram::eigenBeschrijvingInvoeren() {
+        int i, j;
         string invoerfile;
         cout << "Hoe heet het bestand waaruit u de beschrijving over wilt nemen? ";
         cin >> invoerfile;
@@ -244,19 +226,22 @@ void nonogram::eigenBeschrijvingInvoeren() {
 
         invoer >> hoogte >> breedte;
         for (int i = 0; i < hoogte; i++){
-            int j = 0;
-            invoer >> beschrijvingHorizontaal[i][j];
-            while (beschrijvingHorizontaal[i][j] != 0){
-                j++;
-                invoer >> beschrijvingHorizontaal[i][j];
-            }
-        }
-        for (int j = 0; j < breedte; j++){
-            int i = 0;
+            j = 0;
             invoer >> beschrijvingVerticaal[i][j];
             while (beschrijvingVerticaal[i][j] != 0){
-                i++;
+                j++;
                 invoer >> beschrijvingVerticaal[i][j];
+
+            }
+        }
+
+
+        for (int j = 0; j < breedte; j++){
+            i = 0;
+            invoer >> beschrijvingHorizontaal[i][j];
+            while (beschrijvingHorizontaal[i][j] != 0){
+                i++;
+                invoer >> beschrijvingHorizontaal[i][j];
             }
         }
         invoer.close();
@@ -299,7 +284,7 @@ void nonogram::veranderBool(int i, int j) {
 
 
 
-void nonogram::maakArraySchoon() {
+void nonogram::maakBeschrijvingSchoon() {
     int i, j;
     for (i = 0; i < MAX; i++){
         for (j = 0; j < MAX; j++) {
@@ -443,7 +428,6 @@ bool nonogram::checkHorizontaal(int j) {
 
 
 void nonogram::zetPercentage ( ) {
-
     cout << "Vul een percentage in" << endl;
     percentage = leesGetal (101) * 10;
 }//zetpercentage
@@ -507,8 +491,8 @@ void nonogram::vulRandom() {
 
             }
 
-        }//forTwo
-    }//forOne
+        }
+    }
 }//vulRandom
 
 
@@ -540,13 +524,13 @@ void submenu (nonogram & nono) {
                 nono.zetPercentage();
                 nono.maakSchoon();
                 nono.maakBeschrijvingCheck();
-                nono.maakArraySchoon();
+                nono.maakBeschrijvingSchoon();
                 break;
             case 'G': case 'g':
                 nono.zetAfmetingen();
                 nono.maakSchoon();
                 nono.maakBeschrijvingCheck();
-                nono.maakArraySchoon();
+                nono.maakBeschrijvingSchoon();
                 break;
             case 'C': case 'c':
                 nono.cursorCase();
@@ -603,7 +587,7 @@ void hoofdmenu () {
                 nono.maakBeschrijving();
                 break;
             case 'E': case 'e':
-                nono.maakArraySchoon();
+                nono.maakBeschrijvingSchoon();
                 nono.eigenBeschrijvingInvoeren();
                 break;
 
