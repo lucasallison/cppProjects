@@ -214,6 +214,7 @@ void nonogram::beschrijvingUitvoeren() {
             uitvoer << beschrijvingVerticaal[i][j] << " ";
             j++;
         }
+        uitvoer << "0";
         uitvoer << "\n";
     }
 
@@ -223,6 +224,7 @@ void nonogram::beschrijvingUitvoeren() {
             uitvoer << beschrijvingHorizontaal[i][j] << " ";
             i++;
         }
+        uitvoer << "0";
         uitvoer << "\n";
     }
     uitvoer.close();
@@ -321,8 +323,8 @@ void nonogram::maakBeschrijving() {
     int i, j;
     int teller = 0;
 
-    for (int i = 0; i < hoogte; i++) {
-        for (int j = 0; j < breedte; j++) {
+    for (i = 0; i < hoogte; i++) {
+        for (j = 0; j < breedte; j++) {
             beschrijvingVerticaal[i][j] = 0;
             if (nono[i][j]) {
 
@@ -356,8 +358,8 @@ void nonogram::maakBeschrijvingCheck() {
     int i, j;
     int teller = 0;
 
-    for (int j = 0; j < breedte; j++) {
-        for (int i = 0; i < hoogte; i++) {
+    for (j = 0; j < breedte; j++) {
+        for (i = 0; i < hoogte; i++) {
             beschrijvingHorizontaalCheck[i][j] = 0;
             if (nono[i][j]) {
 
@@ -506,8 +508,7 @@ void submenu(nonogram &nono) {
 
     cout << "\n" << "Welkom in het submenu." << endl;
     do {
-        cout << "Maak een keuze uit: (P)ercentage wijzigen, (G)rootte wijzigen, (C)ursor modus aanpassen of (T)erug"
-             << endl;
+        cout << "Maak een keuze uit: (P)ercentage wijzigen, (G)rootte wijzigen, (C)ursor modus aanpassen of (T)erug" << endl;
         keuzeSubmenu = gebruikerInvoer();
         switch (keuzeSubmenu) {
             case 'P': case 'p':
@@ -544,9 +545,7 @@ void hoofdmenu() {
     cout << "Welkom in het hoofdmenu." << endl;
     while (keuzeHoofdmenu != 's' && keuzeHoofdmenu != 'S') {
         nono.drukAf();
-        cout
-                << "Maak een keuze uit: s(C)hoon, (R)andom, (P)submenu, (T)oggle, (M)aak beschrijvingen, (E)igenbeschrijving invoeren, (U)itvoeren van de beschrijvingen of (S)toppen"
-                << endl;
+        cout << "Maak een keuze uit: s(C)hoon, (R)andom, (P)submenu, (T)oggle, (M)aak beschrijvingen, (E)igen beschrijving invoeren, (U)itvoeren van de beschrijvingen of (S)toppen" << endl;
         cout << "Om te curser te bewegen: (A)links, (W)omhoog , (Z)omlaag, (D)rechts" << endl;
         keuzeHoofdmenu = gebruikerInvoer();
         switch (keuzeHoofdmenu) {
@@ -571,9 +570,11 @@ void hoofdmenu() {
             case 'E': case 'e':
                 nono.maakBeschrijvingSchoon();
                 nono.eigenBeschrijvingInvoeren();
+                nono.maakBeschrijvingCheck();
                 break;
             case 'U': case 'u':
                 nono.beschrijvingUitvoeren();
+                break;
             case 'A': case 'a':
                 nono.beweegLinks();
                 nono.maakBeschrijvingCheck();
